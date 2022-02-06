@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:splign_p2m/Signup_login/Widget/bezierContainer.dart';
 import 'package:splign_p2m/Signup_login/loginPage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:splign_p2m/Signup_login/welcomePage.dart';
+import '../Backend/Firebase/authentication.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key, this.title}) : super(key: key);
@@ -14,6 +18,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool isChecked = false;
+  TextEditingController username_ctrl = TextEditingController();
+  TextEditingController email_ctrl = TextEditingController();
+  TextEditingController password_ctrl = TextEditingController();
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -35,7 +42,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController text,
+      {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -50,6 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           TextField(
               obscureText: isPassword,
+              controller: text,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
@@ -60,26 +69,56 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color.fromARGB(255, 77, 136, 52), Color(0xff67bd42)])),
-      child: Text(
-        'Register Now',
-        style: TextStyle(fontSize: 20, color: Colors.white),
+    return InkWell(
+      onTap: () {
+        AuthenticationHelper()
+            .signUp(
+          email: email_ctrl.text,
+          password: password_ctrl.text,
+          username: username_ctrl.text,
+        )
+            .then((result) {
+          if (result == null) {
+            final user = FirebaseAuth.instance.currentUser;
+            DocumentReference ref =
+                FirebaseFirestore.instance.collection('users').doc(user!.uid);
+            ref
+                .set({
+                  'Username': username_ctrl.text,
+                  'Email': email_ctrl.text,
+                  'Password': password_ctrl.text,
+                })
+                .then((value) => print("User Added"))
+                .catchError((error) => print("Failed to add user: $error"));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => WelcomePage()));
+          } else {
+            final snackBar = SnackBar(content: Text(result));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            final snackBar2 = SnackBar(content: Text('Error'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          }
+        });
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 13),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Color.fromARGB(255, 58, 53, 48).withAlpha(100),
+                  offset: Offset(2, 4),
+                  blurRadius: 8,
+                  spreadRadius: 2)
+            ],
+            color: Color(0xff67bd42)),
+        child: Text('Register now',
+            style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
       ),
     );
   }
@@ -133,9 +172,9 @@ class _SignUpPageState extends State<SignUpPage> {
     bool value = false;
     return Column(
       children: <Widget>[
-        _entryField("Username"),
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        _entryField("Username", username_ctrl),
+        _entryField("Email id", email_ctrl),
+        _entryField("Password", password_ctrl, isPassword: true),
         Row(
           children: [
             Checkbox(

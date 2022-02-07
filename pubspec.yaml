@@ -45,6 +45,7 @@ dependencies:
   simple_animations: ^4.0.1
   firebase_auth: ^3.3.6
   cloud_firestore: ^3.1.7
+  flutter_spinkit: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,8 @@ flutter:
     - assets/images/raster/.
     - assets/Logo.png 
     - assets/logo_green.png
+    - assets/doctor.png
+    - assets/patient.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

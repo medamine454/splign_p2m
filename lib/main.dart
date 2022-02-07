@@ -29,14 +29,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: WelcomePage(),
     );
-    /* return GetMaterialApp(
-      title: 'Splign Posture',
-      theme: AppTheme.basic,
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      scrollBehavior: CustomScrollBehaviour(),
-      debugShowCheckedModeBanner: false,
-    );*/
+    /* */
   }
 }
 

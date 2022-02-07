@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
 import '../Backend/Firebase/authentication.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key, this.title}) : super(key: key);
@@ -18,9 +19,11 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool isChecked = false;
+  String role = "patient";
   TextEditingController username_ctrl = TextEditingController();
   TextEditingController email_ctrl = TextEditingController();
   TextEditingController password_ctrl = TextEditingController();
+  bool isLoading = false;
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -77,31 +80,34 @@ class _SignUpPageState extends State<SignUpPage> {
           password: password_ctrl.text,
           username: username_ctrl.text,
         )
-            .then((result) {
+            .then((result) async {
           if (result == null) {
+            setState(() {
+              isLoading = true;
+            });
             final user = FirebaseAuth.instance.currentUser;
             DocumentReference ref =
                 FirebaseFirestore.instance.collection('users').doc(user!.uid);
-            ref
+            await ref
                 .set({
                   'Username': username_ctrl.text,
                   'Email': email_ctrl.text,
                   'Password': password_ctrl.text,
+                  'role': role
                 })
                 .then((value) => print("User Added"))
                 .catchError((error) => print("Failed to add user: $error"));
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => WelcomePage()));
+            await Future.delayed(const Duration(seconds: 2));
+            setState(() {
+              isLoading = false;
+            });
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => LoginPage()));
           } else {
             final snackBar = SnackBar(content: Text(result));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            final snackBar2 = SnackBar(content: Text('Error'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar2);
           }
         });
-
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -172,6 +178,101 @@ class _SignUpPageState extends State<SignUpPage> {
     bool value = false;
     return Column(
       children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            InkWell(
+              onTap: () {
+                change_role("patient");
+              },
+              child: Column(
+                children: [
+                  Container(
+                    height: 140,
+                    width: MediaQuery.of(context).size.width * 0.43,
+                    decoration: BoxDecoration(
+                      color: Color(0xffdfdeff),
+                      image: DecorationImage(
+                        image: AssetImage('assets/patient.png'),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Patient",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xffededed),
+                    ),
+                    child: (role == "patient")
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Color(0xff67bd42),
+                            size: 30,
+                          )
+                        : Container(),
+                  )
+                ],
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                change_role("doctor");
+              },
+              child: Column(
+                children: [
+                  Container(
+                    height: 140,
+                    width: MediaQuery.of(context).size.width * 0.43,
+                    decoration: BoxDecoration(
+                      color: Color(0xffdfdeff),
+                      image: DecorationImage(
+                        image: AssetImage('assets/doctor.png'),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Doctor",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xffededed),
+                    ),
+                    child: (role == "doctor")
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Color(0xff67bd42),
+                            size: 30,
+                          )
+                        : Container(),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
         _entryField("Username", username_ctrl),
         _entryField("Email id", email_ctrl),
         _entryField("Password", password_ctrl, isPassword: true),
@@ -242,46 +343,63 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Container(
-        height: height,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: -MediaQuery.of(context).size.height * .15,
-              right: -MediaQuery.of(context).size.width * .4,
-              child: BezierContainer(),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: height * .2),
-                    Image.asset(
-                      'assets/logo_green.png',
-                      height: 80,
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    _emailPasswordWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _submitButton(),
-                    SizedBox(height: height * .14),
-                    _loginAccountLabel(),
-                  ],
+    if (isLoading == false) {
+      return Scaffold(
+        body: Container(
+          height: height,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: -MediaQuery.of(context).size.height * .15,
+                right: -MediaQuery.of(context).size.width * .4,
+                child: BezierContainer(),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: height * .2),
+                      Image.asset(
+                        'assets/logo_green.png',
+                        height: 80,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      _emailPasswordWidget(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _submitButton(),
+                      SizedBox(height: height * .14),
+                      _loginAccountLabel(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Positioned(top: 40, left: 0, child: _backButton()),
-          ],
+              Positioned(top: 40, left: 0, child: _backButton()),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: Color(0xff67bd42),
+        body: Center(
+          child: SpinKitSpinningLines(
+            color: Colors.white,
+            size: 140,
+          ),
+        ),
+      );
+    }
+  }
+
+  void change_role(String type) {
+    role = type;
+    setState(() {});
   }
 }

@@ -97,7 +97,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 })
                 .then((value) => print("User Added"))
                 .catchError((error) => print("Failed to add user: $error"));
-            await Future.delayed(const Duration(seconds: 2));
             setState(() {
               isLoading = false;
             });

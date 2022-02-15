@@ -94,18 +94,22 @@ class _LoginPageState extends State<LoginPage> {
                   MaterialPageRoute(builder: (context) => Homepatient()));
               print(role);
             } else {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => GetMaterialApp(
-                            title: 'Splign Posture',
-                            theme: AppTheme.basic,
-                            initialRoute: AppPages.initial,
-                            getPages: AppPages.routes,
-                            scrollBehavior: CustomScrollBehaviour(),
-                            debugShowCheckedModeBanner: false,
-                          )));
-              print(role);
+              try {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => GetMaterialApp(
+                              title: 'Splign Posture',
+                              theme: AppTheme.basic,
+                              initialRoute: AppPages.initial,
+                              getPages: AppPages.routes,
+                              scrollBehavior: CustomScrollBehaviour(),
+                              debugShowCheckedModeBanner: false,
+                            )));
+                print(role);
+              } catch (error) {
+                print(error);
+              }
             }
             final snackBar = SnackBar(
                 content: Text('Welcome Back ! Please add your locaion'));

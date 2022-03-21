@@ -1,7 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Backend/Firebase/authentication.dart';
+import '../Mobile_ui/Patient_home.dart';
+import '../app/config/routes/app_pages.dart';
+import '../app/config/themes/app_theme.dart';
+import '../main.dart';
 import 'Widget/bezierContainer.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +22,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailctrl = TextEditingController();
+  TextEditingController passctrl = TextEditingController();
+  String role = '';
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -35,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController ctrl,
+      {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -49,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextField(
+              controller: ctrl,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -60,26 +73,69 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color.fromARGB(255, 77, 136, 52), Color(0xff67bd42)])),
-      child: Text(
-        'Login',
-        style: TextStyle(fontSize: 20, color: Colors.white),
+    return InkWell(
+      onTap: () {
+        AuthenticationHelper()
+            .signIn(email: emailctrl.text, password: passctrl.text)
+            .then((result) async {
+          if (result == null) {
+            final user = FirebaseAuth.instance.currentUser;
+            final id = user!.uid;
+
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .get()
+                .then((value) {
+              role = value.data()!['role'];
+            });
+            if (role == 'patient') {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => Homepatient()));
+              print(role);
+            } else {
+              try {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => GetMaterialApp(
+                              title: 'Splign Posture',
+                              theme: AppTheme.basic,
+                              initialRoute: AppPages.initial,
+                              getPages: AppPages.routes,
+                              scrollBehavior: CustomScrollBehaviour(),
+                              debugShowCheckedModeBanner: false,
+                            )));
+                print(role);
+              } catch (error) {
+                print(error);
+              }
+            }
+            final snackBar = SnackBar(
+                content: Text('Welcome Back ! Please add your locaion'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            final snackBar = SnackBar(content: Text(result));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        });
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 13),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Color.fromARGB(255, 58, 53, 48).withAlpha(100),
+                  offset: Offset(2, 4),
+                  blurRadius: 8,
+                  spreadRadius: 2)
+            ],
+            color: Color(0xff67bd42)),
+        child: Text('Login',
+            style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
       ),
     );
   }
@@ -201,8 +257,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        _entryField("Email id", emailctrl),
+        _entryField("Password", passctrl, isPassword: true),
       ],
     );
   }

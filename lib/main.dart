@@ -2,7 +2,11 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
+<<<<<<< HEAD
 import 'package:splign_p2m/profile/profile_screen.dart';
+=======
+import 'Mobile_ui/Widgets/Personal_info_widget.dart';
+>>>>>>> 1d74b5c17cfed3fe60a2051f73e1d7304fbdefe2
 import 'app/config/routes/app_pages.dart';
 import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +32,12 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
+<<<<<<< HEAD
       home: ProfileScreen(),
+=======
+      home: Person_widget_info(),
+>>>>>>> 1d74b5c17cfed3fe60a2051f73e1d7304fbdefe2
     );
-    /* return GetMaterialApp(
-      title: 'Splign Posture',
-      theme: AppTheme.basic,
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      scrollBehavior: CustomScrollBehaviour(),
-      debugShowCheckedModeBanner: false,
-    );*/
   }
 }
 

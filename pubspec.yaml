@@ -45,6 +45,7 @@ dependencies:
   simple_animations: ^4.0.1
   firebase_auth: ^3.3.6
   cloud_firestore: ^3.1.7
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -70,10 +71,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/image.png
-    - assets/images/raster/.
-    - assets/Logo.png 
-    - assets/logo_green.png
+    - assets/images/
+    - assets/icons/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

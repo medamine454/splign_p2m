@@ -50,6 +50,10 @@ dependencies:
   provider: ^6.0.2
   postgres: ^2.4.3
   http: ^0.13.4
+  gif_ani: ^0.0.2
+  toggle_switch: ^1.4.0
+  font_awesome_flutter: ^10.0.0
+  sleek_circular_slider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +85,9 @@ flutter:
     - assets/logo_green.png
     - assets/doctor.png
     - assets/patient.png
+    - assets/anim.gif
+    - assets/reversed.gif
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

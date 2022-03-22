@@ -1,12 +1,11 @@
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
+import 'Backend/mqtt/state/MQTTAppState.dart';
+import 'Backend/mqtt/state/mqttviews.dart';
 import 'Mobile_ui/Patient_home.dart';
-
-import 'Mobile_ui/Widgets/Personal_info_widget.dart';
-import 'app/config/routes/app_pages.dart';
-import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,7 +29,10 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: Homepatient(),
+      home: ChangeNotifierProvider<MQTTAppState>(
+        create: (_) => MQTTAppState(),
+        child: MQTTView(),
+      ),
     );
   }
 }

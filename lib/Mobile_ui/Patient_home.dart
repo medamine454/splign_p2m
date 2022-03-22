@@ -2,18 +2,12 @@ import 'dart:async';
 import 'package:flutter/animation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:mqtt_client/mqtt_client.dart' as mqtt;
-import 'package:splign_p2m/Backend/mqtt/state/MQTTAppState.dart';
-import 'package:provider/provider.dart';
-import '../Backend/mqtt/state/mqttviews.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class Homepatient extends StatefulWidget {
   const Homepatient({Key? key}) : super(key: key);
-
   @override
   _HomepatientState createState() => _HomepatientState();
 }
@@ -25,33 +19,66 @@ class _HomepatientState extends State<Homepatient> {
     setState(() {});
   }
 
-  var buttonText = 'Start tracking my posture';
-  int _counter = 10;
+  int _dropDownValue = 5;
+  int _dropDownValue_min = 15;
+  var cancel_start = true;
   Timer _timer =
-      Timer(const Duration(seconds: 1), () => print('Timer finished'));
+      Timer(const Duration(seconds: 5), () => print('Timer finished'));
+  int seconds = 120;
+  String constructTime(int seconds) {
+    int hour = seconds ~/ 3600;
+    int minute = seconds % 3600 ~/ 60;
+    int second = seconds % 60;
+    return formatTime(hour) +
+        ":" +
+        formatTime(minute) +
+        ":" +
+        formatTime(second);
+  }
 
-  void _startTimer() {
-    _counter = 10;
+  String formatTime(int timeNum) {
+    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
+  }
+
+  void startTimer() {
+    // Set 1 second callback
+    const period = const Duration(seconds: 1);
+    _timer = Timer.periodic(period, (timer) {
+      // Update interface
+      setState(() {
+        // minus one second because it calls back once a second
+        seconds--;
+      });
+      if (seconds == 0) {
+        cancelTimer();
+      }
+    });
+  }
+
+  void cancelTimer() {
     if (_timer != null) {
       _timer.cancel();
     }
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_counter > 0) {
-          _counter--;
-        } else {
-          _timer.cancel();
-        }
-      });
-    });
   }
 
   int x = 1;
   String anim = 'anim';
+  int mqtt = 0;
   int time_delay = 12;
   int time_goal = 60;
   Color progre_color = Color(0xff67bd42);
   @override
+  void initState() {
+    if (mqtt == 1) {
+      anim = 'anim';
+      progre_color = Color(0xff67bd42);
+    } else {
+      anim = 'reversed';
+      progre_color = Colors.red;
+    }
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +102,7 @@ class _HomepatientState extends State<Homepatient> {
           ),
           Row(children: [
             SizedBox(
-              width: 20,
+              width: 15,
             ),
             Text(
               'Good morning Ahmed !',
@@ -95,22 +122,22 @@ class _HomepatientState extends State<Homepatient> {
             text: TextSpan(children: [
               WidgetSpan(child: Icon(Icons.timelapse_sharp, size: 21)),
               TextSpan(
-                  text: '  37',
-                  style: GoogleFonts.poppins(
-                    textStyle: Theme.of(context).textTheme.headline4,
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  )),
-              TextSpan(
-                text: '/$time_goal min',
+                text: 'Time remaining : ',
                 style: GoogleFonts.poppins(
                   textStyle: Theme.of(context).textTheme.headline4,
                   fontSize: 20,
                   color: Color(0xff67bd42),
                   fontWeight: FontWeight.w700,
                 ),
-              )
+              ),
+              TextSpan(
+                  text: constructTime(seconds),
+                  style: GoogleFonts.poppins(
+                    textStyle: Theme.of(context).textTheme.headline4,
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  )),
             ]),
           )),
           SizedBox(
@@ -128,7 +155,7 @@ class _HomepatientState extends State<Homepatient> {
                 child: CircularPercentIndicator(
                   radius: 100.0,
                   lineWidth: 12,
-                  percent: 0.8,
+                  percent: ((seconds / 120) - 1).abs(),
                   progressColor: progre_color,
                 ),
               ),
@@ -144,10 +171,41 @@ class _HomepatientState extends State<Homepatient> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      setState(() {
-                        anim = 'anim';
-                        progre_color = Color(0xff67bd42);
-                      });
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Center(child: Text("Choose your goal")),
+                              titleTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 20),
+                              actionsOverflowButtonSpacing: 20,
+                              content: Container(
+                                  child: DropdownButton(
+                                hint: Text('$_dropDownValue_min minutes'),
+                                isExpanded: true,
+                                iconSize: 30.0,
+                                style: TextStyle(color: Colors.blue),
+                                items: [15, 30, 60].map(
+                                  (val) {
+                                    return DropdownMenuItem(
+                                      value: val,
+                                      child: Text('$val minutes'),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (val) {
+                                  setState(
+                                    () {
+                                      _dropDownValue_min = val as int;
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              )),
+                            );
+                          });
                     },
                     icon: FaIcon(
                       FontAwesomeIcons.bullseye,
@@ -169,7 +227,7 @@ class _HomepatientState extends State<Homepatient> {
                     activeFgColor: Colors.white,
                     inactiveBgColor: Colors.grey,
                     inactiveFgColor: Colors.white,
-                    initialLabelIndex: 1,
+                    initialLabelIndex: 0,
                     totalSwitches: 2,
                     labels: ['On', 'Off'],
                     radiusStyle: true,
@@ -194,158 +252,30 @@ class _HomepatientState extends State<Homepatient> {
                                   color: Colors.black,
                                   fontSize: 20),
                               actionsOverflowButtonSpacing: 20,
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () {}, child: Text("Cancel")),
-                                ElevatedButton(
-                                    onPressed: () {}, child: Text("Save")),
-                              ],
                               content: Container(
-                                height: 200,
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        changedelay(5);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 20,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.2,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xffdfdeff)),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "5 sec",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Color(0xffededed),
-                                            ),
-                                            child: (selectedDelay == 15)
-                                                ? Icon(
-                                                    Icons.check_circle,
-                                                    color: Colors.red,
-                                                    size: 30,
-                                                  )
-                                                : Container(),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        changedelay(30);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 20,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.2,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffdfdeff),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "30 sec",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Color(0xffededed),
-                                            ),
-                                            child: (selectedDelay == 30)
-                                                ? Icon(
-                                                    Icons.check_circle,
-                                                    color: Colors.red,
-                                                    size: 30,
-                                                  )
-                                                : Container(),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        changedelay(60);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 20,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.2,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffdfdeff),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "1 min",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Color(0xffededed),
-                                            ),
-                                            child: (selectedDelay == 60)
-                                                ? Icon(
-                                                    Icons.check_circle,
-                                                    color: Colors.red,
-                                                    size: 30,
-                                                  )
-                                                : Container(),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  child: DropdownButton(
+                                hint: Text('$_dropDownValue seconds'),
+                                isExpanded: true,
+                                iconSize: 30.0,
+                                style: TextStyle(color: Colors.blue),
+                                items: [5, 15, 30].map(
+                                  (val) {
+                                    return DropdownMenuItem(
+                                      value: val,
+                                      child: Text('$val seconds'),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (val) {
+                                  setState(
+                                    () {
+                                      _dropDownValue = val as int;
+                                      Navigator.pop(context);
+                                      print(_dropDownValue);
+                                    },
+                                  );
+                                },
+                              )),
                             );
                           });
                     },
@@ -395,7 +325,7 @@ class _HomepatientState extends State<Homepatient> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                '$time_goal min',
+                '$_dropDownValue_min min',
                 style: GoogleFonts.poppins(
                   textStyle: Theme.of(context).textTheme.headline4,
                   fontSize: 17,
@@ -413,7 +343,7 @@ class _HomepatientState extends State<Homepatient> {
                 ),
               ),
               Text(
-                '15 sec ',
+                '$_dropDownValue sec',
                 style: GoogleFonts.poppins(
                   textStyle: Theme.of(context).textTheme.headline4,
                   fontSize: 17,
@@ -423,67 +353,75 @@ class _HomepatientState extends State<Homepatient> {
               ),
             ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                (_counter > 0)
-                    ? Text("")
-                    : Text(
-                        "Congratulations !",
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                Text(
-                  '$_counter',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 48,
-                  ),
-                ),
-                _submitButton()
-              ],
-            ),
+          SizedBox(
+            height: 25,
           ),
+          _submitButton(),
+          _canceltButton()
         ],
       ),
     );
   }
 
   Widget _submitButton() {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          buttonText = 'Cancel tracking';
-        });
-        _startTimer();
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: EdgeInsets.symmetric(vertical: 13),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Color.fromARGB(255, 58, 53, 48).withAlpha(100),
-                  offset: Offset(2, 4),
-                  blurRadius: 8,
-                  spreadRadius: 2)
-            ],
-            color: Color(0xff67bd42)),
-        child: Text(buttonText,
-            style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
+    return Visibility(
+      visible: cancel_start,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            cancel_start = !cancel_start;
+          });
+          startTimer();
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: EdgeInsets.symmetric(vertical: 13),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Color.fromARGB(255, 58, 53, 48).withAlpha(100),
+                    offset: Offset(2, 4),
+                    blurRadius: 8,
+                    spreadRadius: 2)
+              ],
+              color: Color(0xff67bd42)),
+          child: Text('Start Posture Tracking',
+              style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
+        ),
+      ),
+    );
+  }
+
+  Widget _canceltButton() {
+    return Visibility(
+      visible: !cancel_start,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            cancel_start = !cancel_start;
+          });
+          cancelTimer();
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: EdgeInsets.symmetric(vertical: 13),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Color.fromARGB(255, 58, 53, 48).withAlpha(100),
+                    offset: Offset(2, 4),
+                    blurRadius: 8,
+                    spreadRadius: 2)
+              ],
+              color: Colors.red),
+          child: Text('Pause Posture Tracking',
+              style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
+        ),
       ),
     );
   }
 }
-
-
-//  home: ChangeNotifierProvider<MQTTAppState>(
-        //  create: (_) => MQTTAppState(),
-      //    child: MQTTView(),
-     //   )

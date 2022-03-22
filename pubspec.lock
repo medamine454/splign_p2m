@@ -181,6 +181,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+<<<<<<< HEAD
+  flutter_svg:
+    dependency: "direct main"
+    description:
+      name: flutter_svg
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
+=======
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -188,6 +197,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
+>>>>>>> 1d74b5c17cfed3fe60a2051f73e1d7304fbdefe2
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -387,6 +397,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.4.0"
   platform:
     dependency: transitive
     description:
@@ -546,6 +563,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+1"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.3.1"
 sdks:
   dart: ">=2.16.0 <3.0.0"
   flutter: ">=2.10.0-0"

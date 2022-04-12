@@ -32,7 +32,7 @@ class _AgePageState extends State<AgePage> {
   ];
   var height_items = [
     'Cm',
-    'Inches',
+    'Feet',
   ];
   bool isLoading = false;
   Widget _backButton() {

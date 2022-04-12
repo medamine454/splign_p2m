@@ -6,6 +6,7 @@ import 'package:splign_p2m/Home/home.dart';
 import 'package:splign_p2m/Signup_login/gender.dart';
 import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
+import 'package:splign_p2m/stats/stats_page.dart';
 import 'Backend/mqtt/state/MQTTAppState.dart';
 import 'Backend/mqtt/state/mqttviews.dart';
 import 'Mobile_ui/Patient_home.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: SignUpPage());
+        home: Home());
   }
 }
 

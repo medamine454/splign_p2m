@@ -9,6 +9,7 @@ const kFontColorPallets = [
   Color.fromRGBO(26, 31, 56, 1),
   Color.fromRGBO(72, 76, 99, 1),
   Color.fromRGBO(149, 149, 163, 1),
+  Color(0xff67bd42),
 ];
 const kBorderRadius = 10.0;
 const kSpacing = 20.0;

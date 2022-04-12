@@ -111,9 +111,6 @@ class _LoginPageState extends State<LoginPage> {
                 print(error);
               }
             }
-            final snackBar = SnackBar(
-                content: Text('Welcome Back ! Please add your locaion'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else {
             final snackBar = SnackBar(content: Text(result));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);

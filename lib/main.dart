@@ -2,6 +2,10 @@ import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:splign_p2m/Home/home.dart';
+import 'package:splign_p2m/Signup_login/gender.dart';
+import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
 import 'package:splign_p2m/notif/notif.dart';
 import 'package:splign_p2m/support/good_posture.dart';
@@ -10,6 +14,10 @@ import 'Mobile_ui/Patient_home.dart';
 import 'Mobile_ui/Widgets/Personal_info_widget.dart';
 import 'app/config/routes/app_pages.dart';
 import 'app/config/themes/app_theme.dart';
+
+import 'Backend/mqtt/state/MQTTAppState.dart';
+import 'Backend/mqtt/state/mqttviews.dart';
+import 'Mobile_ui/Patient_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -38,16 +46,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
-      title: 'Splign Posture',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
+        title: 'Splign Posture',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+            bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
+          ),
         ),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: ProfileScreen(),
-    );
+        debugShowCheckedModeBanner: false,
+        home: SignUpPage());
+
+
+
   }
 }
 

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:splign_p2m/Backend/mqtt/MQTTManager.dart';
 import 'package:splign_p2m/Backend/mqtt/state/MQTTAppState.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MQTTView extends StatefulWidget {
   @override
@@ -70,6 +71,13 @@ class _MQTTViewState extends State<MQTTView> {
     setState(() {});
   }
 
+  Future<AudioPlayer> playLocalAsset() async {
+    AudioCache cache = new AudioCache();
+    //At the next line, DO NOT pass the entire reference such as assets/yes.mp3. This will not work.
+    //Just pass the file name only.
+    return await cache.play("adjust.mp3");
+  }
+
   int _dropDownValue = 5;
   int _dropDownValue_min = 15;
   var cancel_start = true;
@@ -92,6 +100,7 @@ class _MQTTViewState extends State<MQTTView> {
   }
 
   void startTimer() {
+    int alpha = _dropDownValue_min * 60;
     // Set 1 second callback
     const period = const Duration(seconds: 1);
     _timer = Timer.periodic(period, (timer) {
@@ -118,7 +127,6 @@ class _MQTTViewState extends State<MQTTView> {
   int time_delay = 12;
   int time_goal = 60;
   Color progre_color = Color(0xff67bd42);
-
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
       title: Center(
@@ -137,7 +145,7 @@ class _MQTTViewState extends State<MQTTView> {
 
   Widget _buildColumn() {
     return Column(
-      children: <Widget>[
+      children: [
         _buildEditableColumn(),
         _buildScrollableTextWith(currentAppState.getHistoryText)
       ],
@@ -210,6 +218,14 @@ class _MQTTViewState extends State<MQTTView> {
         'assets/reversed.gif',
       );
       progre_color = Colors.red;
+      AudioCache player = new AudioCache(
+        respectSilence: true,
+      );
+      const alarmAudioPath = "adjust.mp3";
+      player.play(alarmAudioPath);
+      AudioPlayer.players.forEach((key, value) {
+        value.stop();
+      });
     } else {
       img = AssetImage(
         'assets/anim.gif',
@@ -276,7 +292,7 @@ class _MQTTViewState extends State<MQTTView> {
               child: CircularPercentIndicator(
                 radius: 100.0,
                 lineWidth: 12,
-                percent: 0.5, //((seconds / 120) - 1).abs(),
+                percent: ((seconds / 120) - 1).abs(),
                 progressColor: progre_color,
               ),
             ),
@@ -489,7 +505,7 @@ class _MQTTViewState extends State<MQTTView> {
     return Visibility(
       visible: cancel_start,
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           setState(() {
             cancel_start = !cancel_start;
           });
@@ -592,10 +608,14 @@ class _MQTTViewState extends State<MQTTView> {
   String _prepareStateMessageFrom(MQTTAppConnectionState state) {
     switch (state) {
       case MQTTAppConnectionState.connected:
+        print('Connected');
         return 'Connected';
       case MQTTAppConnectionState.connecting:
+        print('Connecting');
         return 'Connecting';
+
       case MQTTAppConnectionState.disconnected:
+        print('Disconnected');
         return 'Disconnected';
     }
   }
@@ -608,8 +628,8 @@ class _MQTTViewState extends State<MQTTView> {
       osPrefix = 'Flutter_Android';
     }
     manager = MQTTManager(
-        host: 'test.mosquitto.org',
-        topic: 'spligning',
+        host: 'broker.emqx.io',
+        topic: 'spligning1233',
         identifier: osPrefix,
         state: currentAppState);
     manager.initializeMQTTClient();

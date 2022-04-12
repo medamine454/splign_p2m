@@ -11,6 +11,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
+        backgroundColor: Color(0xff67bd42),
       ),
       body: Body(),
       bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile),

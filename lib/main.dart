@@ -13,13 +13,13 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
-      channelKey: 'channel name',
-      channelName: 'channel name',
-      importance: NotificationImportance.High,
-      channelDescription: 'heyy',
-      channelShowBadge: true,
-      playSound: true,
-    )
+        channelKey: 'channel name',
+        channelName: 'channel name',
+        importance: NotificationImportance.High,
+        channelDescription: 'heyy',
+        channelShowBadge: true,
+        playSound: true,
+        soundSource: 'resource://raw/res_well_done')
   ]).then((_) => print('okey'));
   runApp(MyApp());
 }

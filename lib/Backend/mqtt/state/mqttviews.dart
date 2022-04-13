@@ -27,6 +27,7 @@ class _MQTTViewState extends State<MQTTView> {
   late MQTTAppState currentAppState;
   late MQTTManager manager;
   late final Timer timer;
+
   @override
   String anim = 'anim';
   AssetImage img = AssetImage(
@@ -75,10 +76,11 @@ class _MQTTViewState extends State<MQTTView> {
   }
 
   Future<AudioPlayer> playLocalAsset() async {
-    AudioCache cache = new AudioCache();
-    //At the next line, DO NOT pass the entire reference such as assets/yes.mp3. This will not work.
-    //Just pass the file name only.
-    return await cache.play("adjust.mp3");
+    AudioCache player = new AudioCache(
+      respectSilence: true,
+    );
+    const alarmAudioPath = "adjust.mp3";
+    return await player.play(alarmAudioPath);
   }
 
   int _dropDownValue = 5;
@@ -211,6 +213,8 @@ class _MQTTViewState extends State<MQTTView> {
         ));
   }
 
+  AudioCache player = AudioCache();
+
   Widget _buildScrollableTextWith(String text) {
     mqtt_var = text;
     img.evict();
@@ -218,16 +222,10 @@ class _MQTTViewState extends State<MQTTView> {
       img = AssetImage(
         'assets/reversed.gif',
       );
+      player.play("adjust.mp3");
+
       createPostureNotification();
       progre_color = Colors.red;
-      AudioCache player = new AudioCache(
-        respectSilence: true,
-      );
-      const alarmAudioPath = "adjust.mp3";
-      player.play(alarmAudioPath);
-      AudioPlayer.players.forEach((key, value) {
-        value.stop();
-      });
     } else {
       img = AssetImage(
         'assets/anim.gif',

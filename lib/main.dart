@@ -1,25 +1,11 @@
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:splign_p2m/Home/home.dart';
-import 'package:splign_p2m/Signup_login/gender.dart';
-import 'package:splign_p2m/Signup_login/signup.dart';
-import 'package:splign_p2m/Signup_login/welcomePage.dart';
-import 'package:splign_p2m/stats/stats_page.dart';
-import 'package:splign_p2m/notif/notif.dart';
-import 'package:splign_p2m/support/good_posture.dart';
-import 'package:splign_p2m/support/support.dart';
-import 'Mobile_ui/Patient_home.dart';
-import 'Mobile_ui/Widgets/Personal_info_widget.dart';
-import 'app/config/routes/app_pages.dart';
-import 'app/config/themes/app_theme.dart';
-import 'Backend/mqtt/state/MQTTAppState.dart';
-import 'Backend/mqtt/state/mqttviews.dart';
-import 'Mobile_ui/Patient_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splign_p2m/notif/notif.dart';
+import 'package:splign_p2m/stats/stats_page.dart';
 
 import 'profile/profile_screen.dart';
 
@@ -27,13 +13,13 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
-        channelKey: 'channel name',
-        channelName: 'channel name',
-        importance: NotificationImportance.High,
-        channelDescription: 'heyy',
-        channelShowBadge: true,
-        playSound: true,
-        soundSource: 'resource://raw/res_well_done')
+      channelKey: 'channel name',
+      channelName: 'channel name',
+      importance: NotificationImportance.High,
+      channelDescription: 'heyy',
+      channelShowBadge: true,
+      playSound: true,
+    )
   ]).then((_) => print('okey'));
   runApp(MyApp());
 }

@@ -30,7 +30,6 @@ void main(){
         channelDescription: 'heyy',
         channelShowBadge: true,
         playSound: true,
-        soundSource: 'resource://raw/res_well_done'
       )]).then((_) => print ('okey'));
   runApp(MyApp());
 }
@@ -47,14 +46,17 @@ class MyApp extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
         title: 'Splign Posture',
-        theme: ThemeData(
+      //themeMode: ThemeMode.dark,
+      //theme: ThemeData.light(),
+      //darkTheme: ThemeData.dark(),
+        theme :ThemeData(
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
             bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: SignUpPage());
+        home: Home());
 
 
 

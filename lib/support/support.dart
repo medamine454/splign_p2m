@@ -21,7 +21,6 @@ class Support extends StatelessWidget {
     var size = MediaQuery.of(context)
         .size; //this gonna give us total height and with of our device
     return Scaffold(
-      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile,),
       body: Stack(
         children: <Widget>[
           Container(

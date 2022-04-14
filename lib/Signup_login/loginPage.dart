@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
             });
             if (role == 'patient') {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Homepatient()));
+                  MaterialPageRoute(builder: (context) => Home()));
               print(role);
             } else {
               try {

@@ -57,17 +57,17 @@ dependencies:
   awesome_notifications: ^0.6.21
   audioplayers: ^0.20.1
   babstrap_settings_screen: ^0.1.1
-  firebase_storage: ^10.2.12
-  antdesign_icons: ^0.0.3
-  image_picker: ^0.8.5
   gif_ani: ^0.0.2
   toggle_switch: ^1.4.0
   sleek_circular_slider: ^2.0.1
   convex_bottom_bar: ^3.0.0
   fl_chart: ^0.50.1
   date_picker_timeline: ^1.2.3
+  firebase_storage: ^10.2.11
+  antdesign_icons: ^0.0.3
+  image_picker: ^0.8.5
+  firestore_search: ^0.1.9
   flutter_background: ^1.1.0
-
 
 
 dev_dependencies:

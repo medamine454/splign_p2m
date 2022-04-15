@@ -28,7 +28,8 @@ class _MQTTViewState extends State<MQTTView> {
   late MQTTAppState currentAppState;
   late MQTTManager manager;
   late final Timer timer;
-
+  int timesplayed = 0;
+  int timesplayed_second = 0;
   @override
   String anim = 'anim';
   AssetImage img = AssetImage(
@@ -152,8 +153,7 @@ class _MQTTViewState extends State<MQTTView> {
   Widget _buildColumn() {
     return Column(
       children: [
-        _buildEditableColumn(),
-        _buildScrollableTextWith(currentAppState.getHistoryText)
+        _buildScrollableTextWith(currentAppState.getReceivedText),
       ],
     );
   }
@@ -219,20 +219,28 @@ class _MQTTViewState extends State<MQTTView> {
   Widget _buildScrollableTextWith(String text) {
     mqtt_var = text;
     img.evict();
-    if (currentAppState.getReceivedText.contains('0')) {
+    timesplayed_second++;
+    if (currentAppState.getReceivedText.contains('0') &&
+        timesplayed_second % 15 == 0) {
+      player.play("adjust.mp3");
+      createPostureNotification();
+    }
+    if (currentAppState.getReceivedText.contains('0') && timesplayed == 0) {
+      timesplayed++;
       img = AssetImage(
         'assets/reversed.gif',
       );
-
       player.play("adjust.mp3");
       createPostureNotification();
       progre_color = Colors.red;
-    } else {
+    } else if (currentAppState.getReceivedText.contains('1')) {
+      timesplayed = 0;
       img = AssetImage(
         'assets/anim.gif',
       );
       progre_color = Color(0xff67bd42);
     }
+
     return Column(
       children: [
         Row(children: [

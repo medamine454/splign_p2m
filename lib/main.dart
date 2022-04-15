@@ -19,8 +19,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:splign_p2m/Home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splign_p2m/Signup_login/loginPage.dart';
+import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:splign_p2m/notif/notif.dart';
-import 'stats/stats_page.dart';
+import 'package:splign_p2m/stats/Stream_builder.dart';
+import 'package:splign_p2m/stats/stats_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'Signup_login/welcomePage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,17 +38,11 @@ Future<void> main() async {
         channelDescription: 'heyy',
         channelShowBadge: true,
         playSound: true,
-        soundSource: 'resource://raw/res_well_done'
-      )]).then((_) => print ('okey'));
+        soundSource: 'resource://raw/res_well_done')
+  ]).then((_) => print('okey'));
 
   runApp(MyApp());
 }
-//Future<void> main() async {
-//WidgetsFlutterBinding.ensureInitialized();
-//await Firebase.initializeApp();
-//runApp(const MyApp());
-//}
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -58,13 +57,8 @@ class MyApp extends StatelessWidget {
             bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
           ),
         ),
-
-
-
-
         debugShowCheckedModeBanner: false,
-        home: Home(),
-        );
+        home: WelcomePage());
   }
 }
 

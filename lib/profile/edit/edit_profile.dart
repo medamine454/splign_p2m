@@ -12,24 +12,20 @@ import 'package:image_picker/image_picker.dart';
 
 import '../components/profile_pic.dart';
 
-
 class EditprOFILE extends StatefulWidget {
-  EditprOFILE(
-
-      {Key ?key,
-        required this.age,
-        required this.emailadress,
-        required this.weight,
-        required this.height,
-        required this.fullName,})
-
-      : super(key: key);
+  EditprOFILE({
+    Key? key,
+    required this.age,
+    required this.emailadress,
+    required this.weight,
+    required this.height,
+    required this.fullName,
+  }) : super(key: key);
   String age;
   String weight;
   String height;
   String emailadress;
   String fullName;
-
 
   @override
   State<EditprOFILE> createState() => _EditprOFILEState();
@@ -38,7 +34,7 @@ class EditprOFILE extends StatefulWidget {
 class _EditprOFILEState extends State<EditprOFILE> {
   bool showPassword = false;
 
-  File imageFile= File('assets/images/man.png');
+  File imageFile = File('assets/images/man.png');
 
   TextEditingController emailController = TextEditingController();
 
@@ -110,7 +106,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
         .updateEmail(newEmail)
         .then(
           (value) => message = 'Success',
-    )
+        )
         .catchError((onError) => message = 'error');
     return message;
   }
@@ -124,8 +120,8 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-          'email': emailController.text,
-        })
+              'email': emailController.text,
+            })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
         resetEmail(emailController.text);
@@ -135,8 +131,8 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-          'Age': ageController.text,
-        })
+              'Age': ageController.text,
+            })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
       }
@@ -145,8 +141,8 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-          'Weight': weightController.text,
-        })
+              'Weight': weightController.text,
+            })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
       }
@@ -155,8 +151,8 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-          'Height': heightController.text,
-        })
+              'Height': heightController.text,
+            })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
       }
@@ -181,8 +177,8 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-          'ImageUrl': url,
-        })
+              'ImageUrl': url,
+            })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
       }
@@ -200,7 +196,9 @@ class _EditprOFILEState extends State<EditprOFILE> {
             Icons.arrow_back,
             color: Colors.green,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Container(
@@ -220,39 +218,39 @@ class _EditprOFILEState extends State<EditprOFILE> {
               ),
               ProfilePic(),
               //Center(
-                //child: GestureDetector(
-                  //onTap: () {
-                    //_showPicker(context);
-                  //},
-                  //child:
-                  //ProfilePic(),
-                  //CircleAvatar(
-                    //radius: 100,
-                    //backgroundColor: Color(0xffFDCF09),
+              //child: GestureDetector(
+              //onTap: () {
+              //_showPicker(context);
+              //},
+              //child:
+              //ProfilePic(),
+              //CircleAvatar(
+              //radius: 100,
+              //backgroundColor: Color(0xffFDCF09),
 
-                    //child:
-                    //imageFile != null
-                       // ? ClipRRect(
-                     // borderRadius: BorderRadius.circular(50),
-                      //child: Image.file(
-                        //imageFile,
+              //child:
+              //imageFile != null
+              // ? ClipRRect(
+              // borderRadius: BorderRadius.circular(50),
+              //child: Image.file(
+              //imageFile,
 
-                        //fit: BoxFit.fitHeight,
-                      //),
-                    //)
-                        //: Container(
-                      //decoration: BoxDecoration(
-                          //color: Colors.grey[200],
-                        //  borderRadius: BorderRadius.circular(50)),
-                      //width: 100,
-                      //height: 100,
-                      //child: Icon(
-                        //Icons.camera_alt,
-                        //color: Colors.grey[800],
-                      //),
-                    //),
-                  //),
-                //),
+              //fit: BoxFit.fitHeight,
+              //),
+              //)
+              //: Container(
+              //decoration: BoxDecoration(
+              //color: Colors.grey[200],
+              //  borderRadius: BorderRadius.circular(50)),
+              //width: 100,
+              //height: 100,
+              //child: Icon(
+              //Icons.camera_alt,
+              //color: Colors.grey[800],
+              //),
+              //),
+              //),
+              //),
               //),
               SizedBox(
                 height: 35,
@@ -294,7 +292,6 @@ class _EditprOFILEState extends State<EditprOFILE> {
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
                   controller: ageController,
-                  maxLength: 8,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(bottom: 3),
@@ -350,9 +347,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                     child: Text("CANCEL",
                         style: TextStyle(
                             fontSize: 14,
@@ -399,14 +394,14 @@ class _EditprOFILEState extends State<EditprOFILE> {
         decoration: InputDecoration(
             suffixIcon: isPasswordTextField
                 ? IconButton(
-              onPressed: () {
-                showPassword = !showPassword;
-              },
-              icon: Icon(
-                Icons.remove_red_eye,
-                color: Colors.grey,
-              ),
-            )
+                    onPressed: () {
+                      showPassword = !showPassword;
+                    },
+                    icon: Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.grey,
+                    ),
+                  )
                 : null,
             contentPadding: EdgeInsets.only(bottom: 3),
             labelText: labelText,

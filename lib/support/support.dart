@@ -15,13 +15,33 @@ const kShadowColor = Color(0xFFE6E6E6);
 
 
 
-class Support extends StatelessWidget {
+class Support extends StatefulWidget {
+  Support(
+
+      {Key ?key,
+        required this.age,
+        required this.emailadress,
+        required this.weight,
+        required this.height,
+        required this.fullName,})
+
+      : super(key: key);
+  String age;
+  String weight;
+  String height;
+  String emailadress;
+  String fullName;
+  @override
+  State<Support> createState() => _SupportState();
+}
+
+class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context)
         .size; //this gonna give us total height and with of our device
     return Scaffold(
-      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile,),
+
       body: Stack(
         children: <Widget>[
           Container(
@@ -62,7 +82,7 @@ class Support extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Good Morning Mohsen",
+                    "Good Morning"+ widget.fullName,
                   ),
                   SearchBar(),
                   Expanded(
@@ -88,7 +108,10 @@ class Support extends StatelessWidget {
                         CategoryCard(
                           title: "You Have To Eat Healthy",
                           svgSrc: "assets/icons/Eat_healthy.svg",
-                          press: () {},
+                          press: () {Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Good_posture()),
+                          );},
                         ),
                         CategoryCard(
                           title: "Make a medical ckeckup ",

@@ -6,6 +6,7 @@ import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Backend/Firebase/authentication.dart';
+import '../Home/home.dart';
 import '../Mobile_ui/Patient_home.dart';
 import '../app/config/routes/app_pages.dart';
 import '../app/config/themes/app_theme.dart';
@@ -111,9 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                 print(error);
               }
             }
-            final snackBar = SnackBar(
-                content: Text('Welcome Back ! Please add your locaion'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else {
             final snackBar = SnackBar(content: Text(result));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);

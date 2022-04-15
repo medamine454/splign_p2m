@@ -1,19 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:splign_p2m/profile/components/Logout.dart';
-import 'package:splign_p2m/profile/components/myaccount.dart';
+import 'package:splign_p2m/profile/edit/build_stream_foredit.dart';
+
 
 import '../edit/build_stream_foredit.dart';
+
 import 'Settings.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
 
-class Body extends StatelessWidget {
-  static const name="Mohsen weld mohsna";
-  static const phone = "90441530"; // not real number :)
-  static const location = "Ariana,Tunisia";
+
+class Body extends StatefulWidget {
+  Body(
+
+      {Key ?key,
+        required this.age,
+        required this.emailadress,
+        required this.weight,
+        required this.height,
+        required this.fullName,})
+
+      : super(key: key);
+  String age;
+  String weight;
+  String height;
+  String emailadress;
+  String fullName;
+
+
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Profile"),
+        backgroundColor: Color(0xff67bd42),
+      ),
+      body: SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 20),
 
       child: Column(
@@ -23,7 +50,7 @@ class Body extends StatelessWidget {
           Center(
 
             child: Text(
-              name,
+              widget.fullName,
               style: TextStyle(
                 fontFamily: 'Arial',
                 color: Color.fromRGBO(26, 31, 56, 1),
@@ -39,7 +66,9 @@ class Body extends StatelessWidget {
             icon: "assets/icons/User Icon.svg",
             press: () => {Navigator.push(
             context,
+
             MaterialPageRoute(builder: (context) => EditProfilePgg()),
+
             )
             },
           ),
@@ -64,6 +93,7 @@ class Body extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }

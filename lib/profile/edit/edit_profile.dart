@@ -10,22 +10,27 @@ import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../components/profile_pic.dart';
+
 
 class EditprOFILE extends StatefulWidget {
-
   EditprOFILE(
 
       {Key ?key,
-        required this.PhoneNumber,
+        required this.age,
         required this.emailadress,
-        required this.fullName,
-        required this.imageURL})
+        required this.weight,
+        required this.height,
+        required this.fullName,})
 
       : super(key: key);
-  String PhoneNumber;
+  String age;
+  String weight;
+  String height;
   String emailadress;
   String fullName;
-  String imageURL;
+
+
   @override
   State<EditprOFILE> createState() => _EditprOFILEState();
 }
@@ -33,13 +38,15 @@ class EditprOFILE extends StatefulWidget {
 class _EditprOFILEState extends State<EditprOFILE> {
   bool showPassword = false;
 
-  late File imageFile;
+  File imageFile= File('assets/images/man.png');
 
   TextEditingController emailController = TextEditingController();
 
   TextEditingController NameController = TextEditingController();
 
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
 
   _getFromCamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
@@ -123,12 +130,32 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .catchError((e) => print(e));
         resetEmail(emailController.text);
       }
-      if (phoneController.text != '') {
+      if (ageController.text != '') {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(id)
             .update({
-          'Phone_Number': phoneController.text,
+          'Age': ageController.text,
+        })
+            .then((value) => print('Updated'))
+            .catchError((e) => print(e));
+      }
+      if (weightController.text != '') {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(id)
+            .update({
+          'Weight': weightController.text,
+        })
+            .then((value) => print('Updated'))
+            .catchError((e) => print(e));
+      }
+      if (heightController.text != '') {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(id)
+            .update({
+          'Height': heightController.text,
         })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
@@ -171,7 +198,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white,
+            color: Colors.green,
           ),
           onPressed: () {},
         ),
@@ -191,38 +218,42 @@ class _EditprOFILEState extends State<EditprOFILE> {
               SizedBox(
                 height: 15,
               ),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    _showPicker(context);
-                  },
-                  child: CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Color(0xffFDCF09),
-                    child: imageFile != null
-                        ? ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.file(
-                        imageFile,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    )
-                        : Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50)),
-                      width: 100,
-                      height: 100,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              ProfilePic(),
+              //Center(
+                //child: GestureDetector(
+                  //onTap: () {
+                    //_showPicker(context);
+                  //},
+                  //child:
+                  //ProfilePic(),
+                  //CircleAvatar(
+                    //radius: 100,
+                    //backgroundColor: Color(0xffFDCF09),
+
+                    //child:
+                    //imageFile != null
+                       // ? ClipRRect(
+                     // borderRadius: BorderRadius.circular(50),
+                      //child: Image.file(
+                        //imageFile,
+
+                        //fit: BoxFit.fitHeight,
+                      //),
+                    //)
+                        //: Container(
+                      //decoration: BoxDecoration(
+                          //color: Colors.grey[200],
+                        //  borderRadius: BorderRadius.circular(50)),
+                      //width: 100,
+                      //height: 100,
+                      //child: Icon(
+                        //Icons.camera_alt,
+                        //color: Colors.grey[800],
+                      //),
+                    //),
+                  //),
+                //),
+              //),
               SizedBox(
                 height: 35,
               ),
@@ -262,14 +293,46 @@ class _EditprOFILEState extends State<EditprOFILE> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
-                  controller: phoneController,
+                  controller: ageController,
                   maxLength: 8,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: 'Phone number',
+                      labelText: 'Age',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: widget.PhoneNumber,
+                      hintText: widget.age,
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  controller: weightController,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 3),
+                      labelText: 'weight',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      hintText: widget.weight,
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  controller: heightController,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 3),
+                      labelText: 'Height',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      hintText: widget.height,
                       hintStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

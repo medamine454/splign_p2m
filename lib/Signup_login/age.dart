@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:splign_p2m/Signup_login/Widget/bezierContainer.dart';
-import 'package:splign_p2m/Signup_login/gender.dart';
 import 'package:splign_p2m/Signup_login/loginPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,21 +8,32 @@ import 'package:splign_p2m/Signup_login/welcomePage.dart';
 import '../Backend/Firebase/authentication.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class SignUpPage extends StatefulWidget {
-  SignUpPage({Key? key, this.title}) : super(key: key);
+class AgePage extends StatefulWidget {
+  AgePage({Key? key, this.title, required this.user}) : super(key: key);
 
   final String? title;
+  final User user;
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _AgePageState createState() => _AgePageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _AgePageState extends State<AgePage> {
   bool isChecked = false;
-  String role = "patient";
-  TextEditingController username_ctrl = TextEditingController();
-  TextEditingController email_ctrl = TextEditingController();
-  TextEditingController password_ctrl = TextEditingController();
+  String role = "male";
+  TextEditingController age_ctrl = TextEditingController();
+  TextEditingController height_ctrl = TextEditingController();
+  TextEditingController weight_ctrl = TextEditingController();
+  String dropdownvalue_weight = 'Kg';
+  String dropdownvalue_height = 'Cm';
+  var weight_items = [
+    'Kg',
+    'Lbs',
+  ];
+  var height_items = [
+    'Cm',
+    'Feet',
+  ];
   bool isLoading = false;
   Widget _backButton() {
     return InkWell(
@@ -46,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _entryField(String title, TextEditingController text,
+  Widget _entryField(String title, TextEditingController text, String hint,
       {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -61,9 +71,11 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 10,
           ),
           TextField(
+              keyboardType: TextInputType.number,
               obscureText: isPassword,
               controller: text,
               decoration: InputDecoration(
+                  hintText: hint,
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
                   filled: true))
@@ -74,44 +86,25 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _submitButton() {
     return InkWell(
-      onTap: () {
-        AuthenticationHelper()
-            .signUp(
-          email: email_ctrl.text,
-          password: password_ctrl.text,
-          username: username_ctrl.text,
-        )
-            .then((result) async {
-          if (result == null) {
-            setState(() {
-              isLoading = true;
-            });
-            final user = FirebaseAuth.instance.currentUser;
-            DocumentReference ref =
-                FirebaseFirestore.instance.collection('users').doc(user!.uid);
-            await ref
-                .set({
-                  'Username': username_ctrl.text,
-                  'Email': email_ctrl.text,
-                  'Password': password_ctrl.text,
-                  'role': role
-                })
-                .then((value) => print("User Added"))
-                .catchError((error) => print("Failed to add user: $error"));
-            setState(() {
-              isLoading = false;
-            });
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => GenderPage(
-                          user: user,
-                        )));
-          } else {
-            final snackBar = SnackBar(content: Text(result));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
+      onTap: () async {
+        setState(() {
+          isLoading = true;
         });
+        DocumentReference ref =
+            FirebaseFirestore.instance.collection('users').doc(widget.user.uid);
+        await ref
+            .update({
+              'Age': age_ctrl.text,
+              'Height': height_ctrl.text + ' $dropdownvalue_height',
+              'Weight': weight_ctrl.text + ' $dropdownvalue_weight'
+            })
+            .then((value) => print("User Added"))
+            .catchError((error) => print("Failed to add user: $error"));
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -127,41 +120,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   spreadRadius: 2)
             ],
             color: Color(0xff67bd42)),
-        child: Text('Register now',
+        child: Text('Next',
             style: GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
-      ),
-    );
-  }
-
-  Widget _loginAccountLabel() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Already have an account ?',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              'Login',
-              style: TextStyle(
-                  color: Color(0xff67bd42),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -187,7 +147,8 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             InkWell(
               onTap: () {
-                change_role("patient");
+                change_role("male");
+                print(role);
               },
               child: Column(
                 children: [
@@ -197,7 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: Color(0xffdfdeff),
                       image: DecorationImage(
-                        image: AssetImage('assets/patient.png'),
+                        image: AssetImage('assets/Male.png'),
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
@@ -206,7 +167,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 10,
                   ),
                   Text(
-                    "Patient",
+                    "Male",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(
@@ -219,7 +180,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       shape: BoxShape.circle,
                       color: Color(0xffededed),
                     ),
-                    child: (role == "patient")
+                    child: (role == "male")
                         ? Icon(
                             Icons.check_circle,
                             color: Color(0xff67bd42),
@@ -232,7 +193,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             InkWell(
               onTap: () {
-                change_role("doctor");
+                change_role("female");
               },
               child: Column(
                 children: [
@@ -242,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: Color(0xffdfdeff),
                       image: DecorationImage(
-                        image: AssetImage('assets/doctor.png'),
+                        image: AssetImage('assets/female.png'),
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
@@ -251,7 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 10,
                   ),
                   Text(
-                    "Doctor",
+                    "Female",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(
@@ -264,7 +225,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       shape: BoxShape.circle,
                       color: Color(0xffededed),
                     ),
-                    child: (role == "doctor")
+                    child: (role == "female")
                         ? Icon(
                             Icons.check_circle,
                             color: Color(0xff67bd42),
@@ -277,69 +238,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ],
         ),
-        _entryField("Username", username_ctrl),
-        _entryField("Email id", email_ctrl),
-        _entryField("Password", password_ctrl, isPassword: true),
-        Row(
-          children: [
-            Checkbox(
-              checkColor: Colors.white,
-              fillColor: MaterialStateProperty.resolveWith(getColor),
-              value: isChecked,
-              onChanged: (bool? value) {
-                setState(() {
-                  isChecked = value!;
-                });
-              },
-            ),
-            Text(
-              "I agree to",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 15,
-              ),
-            ),
-            TextButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (ctxt) => new AlertDialog(
-                            title: RichText(
-                                text: TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                          'This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You. We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.\n\n'),
-                                  TextSpan(
-                                      text: 'Personal Data \n',
-                                      style: new TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                  TextSpan(
-                                      text:
-                                          'While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to: • Email address\n • First name and last name\n • Phone number\n • Address, State, Province, ZIP/Postal code, City\n • Usage Data\n\n'),
-                                  TextSpan(
-                                      text: "Children's Privacy \n",
-                                      style: new TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                  TextSpan(
-                                      text:
-                                          "Our Service does not address anyone under the age of 18. We do not knowingly collect personally identifiable information from anyone under the age of 18.\n\n"),
-                                ])),
-                          ));
-                },
-                child: Text('terms and policies',
-                    style: TextStyle(
-                      color: Color(0xff67bd42),
-                      fontSize: 15,
-                    ))),
-          ],
-        )
+        //_entryField("Please enter your Age", username_ctrl),
       ],
     );
   }
@@ -365,21 +264,81 @@ class _SignUpPageState extends State<SignUpPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: height * .2),
-                      Image.asset(
-                        'assets/logo_green.png',
-                        height: 80,
+                      SizedBox(height: height * .29),
+                      Text('Please enter these informations',
+                          style: GoogleFonts.poppins(
+                              fontSize: 20, color: Colors.black)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      _entryField('Age', age_ctrl, 'Example : 18'),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: _entryField(
+                                  'Weight', weight_ctrl, 'Example : 59')),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 23),
+                            child: DropdownButton(
+                                value: dropdownvalue_weight,
+                                items: weight_items.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(
+                                      items,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    dropdownvalue_weight = newValue.toString();
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: _entryField(
+                                  'Height', height_ctrl, 'Example : 182')),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 23),
+                            child: DropdownButton(
+                                value: dropdownvalue_height,
+                                items: height_items.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(
+                                      items,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    dropdownvalue_height = newValue.toString();
+                                  });
+                                }),
+                          ),
+                        ],
                       ),
                       SizedBox(
-                        height: 50,
-                      ),
-                      _emailPasswordWidget(),
-                      SizedBox(
-                        height: 20,
+                        height: 30,
                       ),
                       _submitButton(),
                       SizedBox(height: height * .14),
-                      _loginAccountLabel(),
                     ],
                   ),
                 ),

@@ -3,15 +3,15 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'edit_profile.dart';
+import 'package:splign_p2m/support/support.dart';
 
 
-class EditProfilePgg extends StatefulWidget {
+class ProfilePg extends StatefulWidget {
   @override
-  _EditProfilePggState createState() => _EditProfilePggState();
+  _ProfilePgState createState() => _ProfilePgState();
 }
 
-class _EditProfilePggState extends State<EditProfilePgg> {
+class _ProfilePgState extends State<ProfilePg> {
   late String email;
   late String role;
   late String userName;
@@ -54,13 +54,14 @@ class _EditProfilePggState extends State<EditProfilePgg> {
                   ),
                 );
               } else {
-                return EditprOFILE(
-                    age : age,
-                    emailadress : email,
-                    weight : weight ,
-                    height : height ,
-                    fullName: userName,
-                    );
+                return Support(
+
+                  age : age,
+                  emailadress : email,
+                  weight : weight ,
+                  height : height ,
+                  fullName: userName,
+                );
               }
             }));
   }

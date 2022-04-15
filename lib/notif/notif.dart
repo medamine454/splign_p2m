@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:splign_p2m/notif/notification.dart';
 
 import '../app/constans/enum.dart';
-import '../app/shared_components/coustom_bottom_nav_bar.dart';
+
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -62,30 +62,12 @@ class _NotifState extends State<Notif> {
      });
      }
 
-
-
-
   @override
-
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-        backgroundColor: Color(0xff67bd42),
-      ),
-      body: Container (
-        child : RaisedButton(
-          child: Text(" Button With OnPress "),
-          onPressed:createPostureNotification,
-          color: Colors.red,
-          textColor: Colors.white,
-          splashColor: Colors.grey,
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        )
-
-        ),
-      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile),
-      );
-
+    // TODO: implement build
+    throw UnimplementedError();
   }
+     
+
+
 }

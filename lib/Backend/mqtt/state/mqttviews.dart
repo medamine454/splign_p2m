@@ -223,7 +223,6 @@ class _MQTTViewState extends State<MQTTView> {
     if (currentAppState.getReceivedText.contains('0') &&
         timesplayed_second % 15 == 0) {
       player.play("adjust.mp3");
-      createPostureNotification();
     }
     if (currentAppState.getReceivedText.contains('0') && timesplayed == 0) {
       timesplayed++;

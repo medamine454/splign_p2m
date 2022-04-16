@@ -27,9 +27,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       create: (_) => MQTTAppState(),
       child: MQTTView(),
     ),
-    StreamStats(),
-    StreamStats(),
-    ProfilePg(),
+    LineChartSample2(),
+    SearchDoctor(),
     ProfilePgg(),
   ];
   void onPageChanged(int index) {

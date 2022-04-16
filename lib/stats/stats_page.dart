@@ -4,19 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:flutter_date_picker_timeline/flutter_date_picker_timeline.dart';
 
 class LineChartSample2 extends StatefulWidget {
-  List<FlSpot> list_points = [];
-  double minX = 0;
-  double maxX = 24;
-  double percent = 0;
-  LineChartSample2(
-      {Key? key,
-      required this.percent,
-      required this.list_points,
-      required this.minX,
-      required this.maxX})
-      : super(key: key);
+  LineChartSample2({
+    Key? key,
+  }) : super(key: key);
   @override
   _LineChartSample2State createState() => _LineChartSample2State();
 }
@@ -27,11 +20,73 @@ class _LineChartSample2State extends State<LineChartSample2> {
     const Color(0xff02d39a),
   ];
   bool showAvg = false;
+  List<FlSpot> list_points = [];
+  double minX = 0;
+  double maxX = 24;
+  double percent = 0;
+  DateTime _selectedValue = DateTime.now();
+  DateTime selectedValue_after = DateTime.now();
+  double good_percent = 0;
+  _fetch() async {
+    list_points = [];
+    good_percent = 0;
+    CollectionReference _collectionRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc('ADbyzv77pPeOtxwf3ai7JMdEho82')
+        .collection('Gadget')
+        .doc('Q2IBBFqtB6y94Wfyj6zT')
+        .collection('Measurement');
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc('ADbyzv77pPeOtxwf3ai7JMdEho82')
+        .collection('Gadget')
+        .doc('Q2IBBFqtB6y94Wfyj6zT')
+        .collection('Measurement')
+        .where("Date_Time", isGreaterThanOrEqualTo: _selectedValue)
+        .where("Date_Time", isLessThanOrEqualTo: selectedValue_after)
+        .orderBy('Date_Time')
+        .get();
+
+    QuerySnapshot querySnapshot_2 = await FirebaseFirestore.instance
+        .collection("users")
+        .doc('ADbyzv77pPeOtxwf3ai7JMdEho82')
+        .collection('Gadget')
+        .doc('Q2IBBFqtB6y94Wfyj6zT')
+        .collection('Measurement')
+        .where("value", isEqualTo: "1")
+        .get();
+    // Get data from docs and convert map to List
+    final allData_goodposture = querySnapshot_2.docs;
+    int number_of_good = allData_goodposture.length;
+    final allData = querySnapshot.docs;
+
+    print(good_percent);
+
+    if (allData.length > 0) {
+      good_percent = number_of_good / allData.length;
+      for (var i = 0; i < allData.length; i++) {
+        var dt = (allData[i]['Date_Time'].seconds) * 1000;
+        DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(dt);
+        var sec1 = tsdate.hour * 60 * 60;
+        var sec2 = tsdate.minute * 60;
+        var sec3 = tsdate.second;
+        var sec = sec1 + sec2 + sec3;
+        list_points
+            .add(FlSpot(sec.toDouble(), double.parse(allData[i]['value'])));
+      }
+      minX = list_points.first.x;
+      maxX = list_points.last.x;
+    } else {
+      good_percent = 0;
+    }
+
+    print(list_points);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    DateTime _selectedValue = DateTime.now();
     final Scaffold scaffold = Scaffold(
         appBar: AppBar(
           title: Center(
@@ -46,52 +101,116 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
           backgroundColor: Color(0xff67bd42),
         ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                DatePicker(
-                  DateTime.now(),
-                  initialSelectedDate: DateTime.now(),
-                  selectionColor: Color(0xff67bd42),
-                  selectedTextColor: Color.fromARGB(255, 255, 255, 255),
-                  width: 50,
-                  height: 100,
-                  onDateChange: (date) {
-                    // New date selected
-                    setState(() {
-                      _selectedValue = date;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  width: width * 0.96,
-                  child: Stack(
-                    children: <Widget>[
-                      AspectRatio(
-                        aspectRatio: 1.70,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(18),
-                              ),
-                              color: Color(0xff232d37)),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 18.0, left: 12.0, top: 24, bottom: 12),
-                            child: LineChart(
-                              showAvg ? avgData() : mainData(),
-                            ),
-                          ),
+        body: FutureBuilder(
+            future: _fetch(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.grey,
+                  ),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      /* SizedBox(
+                        FlutterDatePickerTimeline(
+                          startDate: DateTime(2022, 03, 01),
+                          endDate: DateTime.now(),
+                          selectedItemBackgroundColor: Color(0xff67bd42),
+                          unselectedItemBackgroundColor:
+                              Color.fromARGB(255, 255, 255, 255),
+                          initialSelectedDate: _selectedValue,
+                          onSelectedDateChange: (dateTime) {
+                            setState(() {
+                              _selectedValue = dateTime!;
+                              selectedValue_after =
+                                  _selectedValue.add(new Duration(days: 1));
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          width: width * 0.96,
+                          margin: EdgeInsets.all(20.0),
+                          height: 260,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Column(children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text('Good vs. Bad posture'),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            new CircularPercentIndicator(
+                              radius: 80.0,
+                              animation: true,
+                              animationDuration: 1200,
+                              lineWidth: 15.0,
+                              percent: good_percent,
+                              center: new Text(
+                                (good_percent * 100).toStringAsFixed(2) + '%',
+                                style: new TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0),
+                              ),
+                              circularStrokeCap: CircularStrokeCap.butt,
+                              backgroundColor: Colors.red,
+                              progressColor: Color(0xff67bd42),
+                            ),
+                          ]),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: width * 0.96,
+                          child: Stack(
+                            children: <Widget>[
+                              AspectRatio(
+                                aspectRatio: 1.70,
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(18),
+                                      ),
+                                      color: Color(0xff232d37)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 18.0,
+                                        left: 12.0,
+                                        top: 24,
+                                        bottom: 12),
+                                    child: LineChart(
+                                      mainData(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              /* SizedBox(
                         width: 60,
                         height: 34,
                         child: TextButton(
@@ -110,61 +229,18 @@ class _LineChartSample2State extends State<LineChartSample2> {
                           ),
                         ),
                       ),*/
-                    ],
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Container(
-                  width: width * 0.96,
-                  margin: EdgeInsets.all(20.0),
-                  height: 260,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Column(children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text('Good vs. Bad posture'),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    new CircularPercentIndicator(
-                      radius: 80.0,
-                      animation: true,
-                      animationDuration: 1200,
-                      lineWidth: 15.0,
-                      percent: widget.percent,
-                      center: new Text(
-                        (widget.percent * 100).toStringAsFixed(2) + '%',
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
-                      circularStrokeCap: CircularStrokeCap.butt,
-                      backgroundColor: Colors.red,
-                      progressColor: Color(0xff67bd42),
-                    ),
-                  ]),
-                ),
-              ],
-            ),
-          ),
-        ));
+                );
+              }
+            }));
 
     return scaffold;
   }
@@ -320,13 +396,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
       borderData: FlBorderData(
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
-      minX: widget.minX,
-      maxX: widget.maxX,
+      minX: minX,
+      maxX: maxX,
       minY: 0,
       maxY: 1,
       lineBarsData: [
         LineChartBarData(
-          spots: widget.list_points,
+          spots: list_points,
           isCurved: false,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -402,13 +478,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
       borderData: FlBorderData(
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
-      minX: widget.minX,
-      maxX: widget.maxX,
+      minX: minX,
+      maxX: maxX,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: widget.list_points,
+          spots: list_points,
           isCurved: false,
           gradient: LinearGradient(
             colors: [

@@ -78,12 +78,7 @@ class _StreamStatsState extends State<StreamStats> {
                   ),
                 );
               } else {
-                return LineChartSample2(
-                  percent: good_percent,
-                  list_points: list_points,
-                  maxX: maxX,
-                  minX: minX,
-                );
+                return Container();
               }
             }));
   }

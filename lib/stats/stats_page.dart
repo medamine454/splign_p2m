@@ -2,10 +2,21 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class LineChartSample2 extends StatefulWidget {
-  const LineChartSample2({Key? key}) : super(key: key);
-
+  List<FlSpot> list_points = [];
+  double minX = 0;
+  double maxX = 24;
+  double percent = 0;
+  LineChartSample2(
+      {Key? key,
+      required this.percent,
+      required this.list_points,
+      required this.minX,
+      required this.maxX})
+      : super(key: key);
   @override
   _LineChartSample2State createState() => _LineChartSample2State();
 }
@@ -15,9 +26,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
-
   bool showAvg = false;
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -37,73 +46,123 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
           backgroundColor: Color(0xff67bd42),
         ),
-        body: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              DatePicker(
-                DateTime.now(),
-                initialSelectedDate: DateTime.now(),
-                selectionColor: Color(0xff67bd42),
-                selectedTextColor: Color.fromARGB(255, 255, 255, 255),
-                width: 50,
-                height: 100,
-                onDateChange: (date) {
-                  // New date selected
-                  setState(() {
-                    _selectedValue = date;
-                  });
-                },
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                width: width * 0.96,
-                child: Stack(
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 1.70,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(18),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                DatePicker(
+                  DateTime.now(),
+                  initialSelectedDate: DateTime.now(),
+                  selectionColor: Color(0xff67bd42),
+                  selectedTextColor: Color.fromARGB(255, 255, 255, 255),
+                  width: 50,
+                  height: 100,
+                  onDateChange: (date) {
+                    // New date selected
+                    setState(() {
+                      _selectedValue = date;
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  width: width * 0.96,
+                  child: Stack(
+                    children: <Widget>[
+                      AspectRatio(
+                        aspectRatio: 1.70,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(18),
+                              ),
+                              color: Color(0xff232d37)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                right: 18.0, left: 12.0, top: 24, bottom: 12),
+                            child: LineChart(
+                              showAvg ? avgData() : mainData(),
                             ),
-                            color: Color(0xff232d37)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              right: 18.0, left: 12.0, top: 24, bottom: 12),
-                          child: LineChart(
-                            showAvg ? avgData() : mainData(),
                           ),
                         ),
                       ),
-                    ),
-                    /* SizedBox(
-                      width: 60,
-                      height: 34,
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            showAvg = !showAvg;
-                          });
-                        },
-                        child: Text(
-                          'avg',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: showAvg
-                                  ? Colors.white.withOpacity(0.5)
-                                  : Colors.white),
+                      /* SizedBox(
+                        width: 60,
+                        height: 34,
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              showAvg = !showAvg;
+                            });
+                          },
+                          child: Text(
+                            'avg',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: showAvg
+                                    ? Colors.white.withOpacity(0.5)
+                                    : Colors.white),
+                          ),
                         ),
-                      ),
-                    ),*/
-                  ],
+                      ),*/
+                    ],
+                  ),
                 ),
-              )
-            ],
+                SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  width: width * 0.96,
+                  margin: EdgeInsets.all(20.0),
+                  height: 260,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Column(children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Good vs. Bad posture'),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    new CircularPercentIndicator(
+                      radius: 80.0,
+                      animation: true,
+                      animationDuration: 1200,
+                      lineWidth: 15.0,
+                      percent: widget.percent,
+                      center: new Text(
+                        (widget.percent * 100).toStringAsFixed(2) + '%',
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
+                      ),
+                      circularStrokeCap: CircularStrokeCap.butt,
+                      backgroundColor: Colors.red,
+                      progressColor: Color(0xff67bd42),
+                    ),
+                  ]),
+                ),
+              ],
+            ),
           ),
         ));
 
@@ -121,25 +180,69 @@ class _LineChartSample2State extends State<LineChartSample2> {
       case 0:
         text = const Text('00:00', style: style);
         break;
-      case 4:
+      case 3600:
+        text = const Text('01:00', style: style);
+        break;
+      case 7200:
+        text = const Text('02:00', style: style);
+        break;
+      case 10800:
+        text = const Text('03:00', style: style);
+        break;
+      case 14400:
         text = const Text('04:00', style: style);
         break;
-      case 8:
+      case 18000:
+        text = const Text('05:00', style: style);
+        break;
+      case 21600:
+        text = const Text('06:00', style: style);
+        break;
+      case 25200:
+        text = const Text('07:00', style: style);
+        break;
+      case 28800:
         text = const Text('08:00', style: style);
         break;
-      case 12:
+      case 32400:
+        text = const Text('09:00', style: style);
+        break;
+      case 36000:
+        text = const Text('10:00', style: style);
+        break;
+      case 39600:
+        text = const Text('11:00', style: style);
+        break;
+      case 43200:
         text = const Text('12:00', style: style);
         break;
-      case 16:
+      case 46800:
+        text = const Text('13:00', style: style);
+        break;
+      case 50400:
+        text = const Text('14:00', style: style);
+        break;
+      case 54000:
+        text = const Text('15:00', style: style);
+        break;
+      case 57600:
         text = const Text('16:00', style: style);
         break;
-      case 20:
+      case 61200:
+        text = const Text('17:00', style: style);
+        break;
+      case 64800:
+        text = const Text('18:00', style: style);
+        break;
+      case 68400:
+        text = const Text('19:00', style: style);
+        break;
+      case 72000:
         text = const Text('20:00', style: style);
         break;
-      case 23:
+      case 82800:
         text = const Text('23:00', style: style);
         break;
-
       default:
         text = const Text('', style: style);
         break;
@@ -217,21 +320,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
       borderData: FlBorderData(
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
-      minX: 0,
-      maxX: 24,
+      minX: widget.minX,
+      maxX: widget.maxX,
       minY: 0,
       maxY: 1,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 1),
-            FlSpot(1, 1),
-            FlSpot(2, 1),
-            FlSpot(3, 0),
-            FlSpot(4, 0),
-            FlSpot(5, 1),
-            FlSpot(6, 0),
-          ],
+          spots: widget.list_points,
           isCurved: false,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -307,22 +402,14 @@ class _LineChartSample2State extends State<LineChartSample2> {
       borderData: FlBorderData(
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
-      minX: 0,
-      maxX: 5,
+      minX: widget.minX,
+      maxX: widget.maxX,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3.44),
-            FlSpot(2.6, 3.44),
-            FlSpot(4.9, 3.44),
-            FlSpot(6.8, 3.44),
-            FlSpot(8, 3.44),
-            FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
-          ],
-          isCurved: true,
+          spots: widget.list_points,
+          isCurved: false,
           gradient: LinearGradient(
             colors: [
               ColorTween(begin: gradientColors[0], end: gradientColors[1])

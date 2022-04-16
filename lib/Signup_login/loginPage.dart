@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splign_p2m/Home/home.dart';
 import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -91,8 +92,8 @@ class _LoginPageState extends State<LoginPage> {
               role = value.data()!['role'];
             });
             if (role == 'patient') {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Home()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Home()));
               print(role);
             } else {
               try {

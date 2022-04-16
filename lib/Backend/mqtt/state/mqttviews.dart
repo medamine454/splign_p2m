@@ -8,27 +8,41 @@ import 'package:provider/provider.dart';
 import 'package:splign_p2m/Backend/mqtt/MQTTManager.dart';
 import 'package:splign_p2m/Backend/mqtt/state/MQTTAppState.dart';
 import 'package:splign_p2m/notif/notif.dart';
+import 'package:splign_p2m/notif/notification.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../../../notif/notification.dart';
-import '../../../notif/notif.dart';
 
 class MQTTView extends StatefulWidget {
+  MQTTView(
+      {Key ?key,
+        required this.age,
+        required this.emailadress,
+        required this.weight,
+        required this.height,
+        required this.fullName,})
+
+      : super(key: key);
+  String age= '18';
+  String weight;
+  String height;
+  String emailadress;
+  String fullName;
   @override
   State<StatefulWidget> createState() {
     return _MQTTViewState();
   }
 }
 
-class _MQTTViewState extends State<MQTTView> {
+class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
   final TextEditingController _hostTextController = TextEditingController();
   final TextEditingController _messageTextController = TextEditingController();
   final TextEditingController _topicTextController = TextEditingController();
   late MQTTAppState currentAppState;
   late MQTTManager manager;
   late final Timer timer;
-
+  int timesplayed = 0;
+  int timesplayed_second = 0;
   @override
   String anim = 'anim';
   AssetImage img = AssetImage(
@@ -36,15 +50,27 @@ class _MQTTViewState extends State<MQTTView> {
   );
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _hostTextController.dispose();
     _messageTextController.dispose();
     _topicTextController.dispose();
     super.dispose();
   }
+  //bool isBackground = false ;
+  //@override
+  //void didChangeLifeAppCycleState(AppLifecycleState state) {
+
+    //super.didChangeLifeAppCycleState(state);
+    //if (state == AppLifecycleState.inactive||state == AppLifecycleState.detached) return;
+     //isBackground = state == AppLifecycleState.paused;
+     //print(isBackground);
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +178,7 @@ class _MQTTViewState extends State<MQTTView> {
   Widget _buildColumn() {
     return Column(
       children: [
-        _buildEditableColumn(),
-        _buildScrollableTextWith(currentAppState.getHistoryText)
+        _buildScrollableTextWith(currentAppState.getReceivedText),
       ],
     );
   }
@@ -219,20 +244,29 @@ class _MQTTViewState extends State<MQTTView> {
   Widget _buildScrollableTextWith(String text) {
     mqtt_var = text;
     img.evict();
-    if (currentAppState.getReceivedText.contains('0')) {
+    timesplayed_second++;
+    //print(isBackground);
+    if (currentAppState.getReceivedText.contains('0') &&
+        timesplayed_second % 15 == 0 ) {
+      player.play("adjust.mp3");
+      createPostureNotification();
+    }
+    if (currentAppState.getReceivedText.contains('0') && timesplayed == 0 ) {
+      timesplayed++;
       img = AssetImage(
         'assets/reversed.gif',
       );
-
       player.play("adjust.mp3");
       createPostureNotification();
       progre_color = Colors.red;
-    } else {
+    } else if (currentAppState.getReceivedText.contains('1')) {
+      timesplayed = 0;
       img = AssetImage(
         'assets/anim.gif',
       );
       progre_color = Color(0xff67bd42);
     }
+
     return Column(
       children: [
         Row(children: [
@@ -240,7 +274,7 @@ class _MQTTViewState extends State<MQTTView> {
             width: 15,
           ),
           Text(
-            'Good morning Ahmed !',
+            'Good morning ' + widget.fullName,
             style: GoogleFonts.poppins(
               textStyle: Theme.of(context).textTheme.headline4,
               fontSize: 20,

@@ -11,6 +11,7 @@ import '../profile/edit/build_stream_ptofil.dart';
 import '../stats/Stream_builder.dart';
 import '../stats/stats_page.dart';
 import '../support/support.dart';
+import 'package:splign_p2m/Backend//mqtt/state/mqtt_stream.dart';
 
 class Home extends StatefulWidget {
   static const routeName = 'home';
@@ -25,7 +26,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   final _pageOptions = [
     ChangeNotifierProvider<MQTTAppState>(
       create: (_) => MQTTAppState(),
-      child: MQTTView(),
+      child: Profileg(),
     ),
     LineChartSample2(),
     SearchDoctor(),
@@ -78,6 +79,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
           ),
         );
       }
+
     });
     return Scaffold(
       body: PageView(

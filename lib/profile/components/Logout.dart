@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:splign_p2m/Home/home.dart';
+import 'package:splign_p2m/Signup_login/welcomePage.dart';
 
 import '../../app/constans/enum.dart';
 import '../../app/shared_components/coustom_bottom_nav_bar.dart';
-
+import '../../Backend/Firebase/authentication.dart';
 class LogOut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,13 @@ class LogOut extends StatelessWidget {
                     "Yes",
                     style: TextStyle(fontSize: 20),
                   ),
-                  onPressed: null,
+                  onPressed: (){
+                    AuthenticationHelper().signOut();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WelcomePage()),
+                    );
+                  },
                   splashColor: Colors.grey,
                 ),
                 SizedBox(

@@ -7,8 +7,11 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:splign_p2m/Backend/mqtt/MQTTManager.dart';
 import 'package:splign_p2m/Backend/mqtt/state/MQTTAppState.dart';
+import 'package:splign_p2m/notif/notif.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:audioplayers/audioplayers.dart';
+
+import '../../../notif/notification.dart';
 
 class MQTTView extends StatefulWidget {
   @override
@@ -158,9 +161,7 @@ class _MQTTViewState extends State<MQTTView> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
-        children: <Widget>[
-          _buildConnecteButtonFrom(currentAppState.getAppConnectionState)
-        ],
+        children: <Widget>[],
       ),
     );
   }
@@ -219,6 +220,7 @@ class _MQTTViewState extends State<MQTTView> {
       img = AssetImage(
         'assets/reversed.gif',
       );
+      createPostureNotification();
       progre_color = Colors.red;
       AudioCache player = new AudioCache(
         respectSilence: true,
@@ -236,9 +238,6 @@ class _MQTTViewState extends State<MQTTView> {
     }
     return Column(
       children: [
-        SizedBox(
-          height: 15,
-        ),
         Row(children: [
           SizedBox(
             width: 15,
@@ -495,24 +494,22 @@ class _MQTTViewState extends State<MQTTView> {
         SizedBox(
           height: 25,
         ),
-        _submitButton(),
-        _canceltButton(),
+        _submitButton(currentAppState.getAppConnectionState),
+        _canceltButton(currentAppState.getAppConnectionState),
       ],
     );
   }
 
   final values = ['1', '2', '3', '4', '5'];
   int _index = 0;
-  Widget _submitButton() {
+
+  Widget _submitButton(MQTTAppConnectionState state) {
     return Visibility(
       visible: cancel_start,
       child: InkWell(
-        onTap: () async {
-          setState(() {
-            cancel_start = !cancel_start;
-          });
-          startTimer();
-        },
+        onTap: state == MQTTAppConnectionState.disconnected
+            ? _configureAndConnect
+            : null,
         child: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           padding: EdgeInsets.symmetric(vertical: 13),
@@ -534,16 +531,12 @@ class _MQTTViewState extends State<MQTTView> {
     );
   }
 
-  Widget _canceltButton() {
+  Widget _canceltButton(MQTTAppConnectionState state) {
     return Visibility(
       visible: !cancel_start,
       child: InkWell(
-        onTap: () {
-          setState(() {
-            cancel_start = !cancel_start;
-          });
-          cancelTimer();
-        },
+        onTap:
+            state == MQTTAppConnectionState.connected ? _disconnect : null, //
         child: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           padding: EdgeInsets.symmetric(vertical: 13),
@@ -631,15 +624,23 @@ class _MQTTViewState extends State<MQTTView> {
     }
     manager = MQTTManager(
         host: 'broker.emqx.io',
-        topic: 'spligning1233',
+        topic: 'splign',
         identifier: osPrefix,
         state: currentAppState);
     manager.initializeMQTTClient();
     manager.connect();
+    setState(() {
+      cancel_start = !cancel_start;
+    });
+    startTimer();
   }
 
   void _disconnect() {
     manager.disconnect();
+    setState(() {
+      cancel_start = !cancel_start;
+    });
+    cancelTimer();
   }
 
   void _publishMessage(String text) {

@@ -8,6 +8,9 @@ import 'package:splign_p2m/profile/profile_screen.dart';
 import '../Backend/mqtt/state/MQTTAppState.dart';
 import '../support/support.dart';
 
+import '../stats/stats_page.dart';
+
+
 class Home extends StatefulWidget {
   static const routeName = 'home';
 
@@ -23,7 +26,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       create: (_) => MQTTAppState(),
       child: MQTTView(),
     ),
-    ProfileScreen(),
+    LineChartSample2(),
     ProfileScreen(),
     Support(),
     ProfileScreen(),

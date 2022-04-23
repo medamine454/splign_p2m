@@ -1,7 +1,7 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:splign_p2m/profile/theme/theme.dart';
+
 
 import '../../app/constans/enum.dart';
 import '../../app/shared_components/coustom_bottom_nav_bar.dart';
@@ -39,12 +39,7 @@ class Settings extends StatelessWidget {
               subtitle: "Automatic",
               trailing: Switch.adaptive(
                 value: false,
-                onChanged: (value) { onPressed: () {
-                     Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Theame()),
-                      );
-                };
-                },
+                onChanged: (value) {},
               ),
             ),
           ],

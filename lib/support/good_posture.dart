@@ -24,6 +24,7 @@ class Good_posture extends StatelessWidget {
 
                ),
                child: Column(
+                 mainAxisAlignment: MainAxisAlignment.start,
                  children: <Widget>[
                    SizedBox(height: 20,),
                    Padding(
@@ -46,10 +47,22 @@ class Good_posture extends StatelessWidget {
 
                    ),
                    SizedBox(height: 20,),
+<<<<<<< HEAD
 
+=======
+                   Padding(
+                     padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                     child: Text('You may have heard that good posture is essential for good health, but do you know why? Posture refers to how you position your body when you’re sitting, standing, or lying down. Your posture is the result of habits formed over the course of years.'
+
+                         'Many people may recognize poor posture in others without realizing how their own falls short. If you look around at co-workers at the office, you’ll likely find them hunched over at their desks. Learn why good posture matters — and what you can do to improve yours.',
+                       textAlign : TextAlign.left),
+                   ),
+                   SizedBox(height: 20,),
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
                    Text('What is good posture?'),
-                   SizedBox(height: 10,),
+                   SizedBox(height: 2,),
                  Padding(
+<<<<<<< HEAD
                    padding: const EdgeInsets.all(40.0),
                    child: Text(   'Good posture is the proper alignment of your body when standing or sitting. Correct positioning involves training yourself to hold your body against gravity with the least strain and tension on supportive structures, such as your muscles and ligaments. Proper posture keeps your bones and joints in optimal alignment and decreases wear and tear on supportive structures.',
                      style: TextStyle(
@@ -69,6 +82,26 @@ class Good_posture extends StatelessWidget {
                    SizedBox(height: 10,),
                     Text(  'Proper posture improves spine health'),
                    SizedBox(height: 10,),
+=======
+                   padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                   child: Text('Good posture is the proper alignment of your body when standing or sitting. Correct positioning involves training yourself to hold your body against gravity with the least strain and tension on supportive structures, such as your muscles and ligaments.',
+                       textAlign : TextAlign.left),
+                 ),
+                   SizedBox(height: 20,),
+                   Padding(
+                       padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                       child: Text('Good posture reduces back and neck pain',textAlign : TextAlign.left),
+                     ),
+                   SizedBox(height: 2,),
+                   Text('Poor posture impacts digestion',textAlign : TextAlign.left),
+                   SizedBox(height: 2,),
+                   Text('Good posture improves muscle and joint function',textAlign : TextAlign.left),
+                   SizedBox(height: 2,),
+                   Text('Proper posture boosts mood',textAlign : TextAlign.left),
+                   SizedBox(height: 2,),
+                   Text('Proper posture improves spine health',textAlign : TextAlign.left),
+                   SizedBox(height: 2,),
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
 
 
                  ],

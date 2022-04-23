@@ -41,6 +41,7 @@ class CategoryCard extends StatelessWidget {
 
           color: Colors.transparent,
           child: InkWell(
+          onTap : (){press();},
 
             onTap:(){
               press();

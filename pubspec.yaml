@@ -66,9 +66,17 @@ dependencies:
   fl_chart: ^0.50.1
   date_picker_timeline: ^1.2.3
   firebase_storage: ^10.2.11
+<<<<<<< HEAD
   image_picker: ^0.8.5
   firebase_analytics: ^9.1.5
 
+=======
+  antdesign_icons: ^0.0.3
+  image_picker: ^0.8.5
+  firestore_search: ^0.1.9
+  flutter_background: ^1.1.0
+  flutter_date_picker_timeline: ^0.3.3
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
 
 
 dev_dependencies:
@@ -100,6 +108,7 @@ flutter:
     - assets/
     - assets/adjust.mp3
     - assets/well_done.mp3
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

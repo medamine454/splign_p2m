@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splign_p2m/Home/home.dart';
 import 'package:splign_p2m/Signup_login/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Backend/Firebase/authentication.dart';
+import '../Home/home.dart';
 import '../Mobile_ui/Patient_home.dart';
 import '../app/config/routes/app_pages.dart';
 import '../app/config/themes/app_theme.dart';
@@ -90,8 +92,8 @@ class _LoginPageState extends State<LoginPage> {
               role = value.data()!['role'];
             });
             if (role == 'patient') {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Homepatient()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Home()));
               print(role);
             } else {
               try {

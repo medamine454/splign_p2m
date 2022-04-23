@@ -1,16 +1,14 @@
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:splign_p2m/Home/home.dart';
+import 'package:splign_p2m/Signup_login/welcomePage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:splign_p2m/notif/notif.dart';
-import 'package:splign_p2m/stats/stats_page.dart';
+import 'Signup_login/welcomePage.dart';
 
-import 'profile/profile_screen.dart';
-
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
       channelKey: 'channel name',
@@ -18,19 +16,20 @@ void main() {
       importance: NotificationImportance.High,
       channelDescription: 'heyy',
       channelShowBadge: true,
+<<<<<<< HEAD
       playSound: true,
       soundSource: 'android/app/src/main/res/raw/res_well_done.m4a'
+=======
+      //playSound: true,
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
     )
+    // soundSource: 'resource://raw/res_well_done'
   ]).then((_) => print('okey'));
+
   runApp(MyApp());
 }
-//Future<void> main() async {
-//WidgetsFlutterBinding.ensureInitialized();
-//await Firebase.initializeApp();
-//runApp(const MyApp());
-//}
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget with WidgetsBindingObserver {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: Home());
+
+        home: WelcomePage(),
+        );
+
   }
 }
 

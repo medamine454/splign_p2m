@@ -79,7 +79,6 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
           ),
         );
       }
-
     });
     return Scaffold(
       body: PageView(

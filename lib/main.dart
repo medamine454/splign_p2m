@@ -2,13 +2,17 @@ import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:splign_p2m/Home/home.dart';
+import 'package:splign_p2m/Signup_login/loginPage.dart';
 import 'package:splign_p2m/Signup_login/welcomePage.dart';
 import 'package:flutter/material.dart';
+import 'Search_doctor/firestore_search.dart';
 import 'Signup_login/welcomePage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
       channelKey: 'channel name',
@@ -30,18 +34,16 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
-        title: 'Splign Posture',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-            bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
-          ),
+      title: 'Splign Posture',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
         ),
-        debugShowCheckedModeBanner: false,
-
-        home: WelcomePage(),
-        );
-
+      ),
+      debugShowCheckedModeBanner: false,
+      home: WelcomePage(),
+    );
   }
 }
 

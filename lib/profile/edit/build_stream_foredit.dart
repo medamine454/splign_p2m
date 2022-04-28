@@ -1,10 +1,7 @@
-import 'dart:ffi';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'edit_profile.dart';
-
 
 class EditProfilePgg extends StatefulWidget {
   @override
@@ -15,7 +12,7 @@ class _EditProfilePggState extends State<EditProfilePgg> {
   late String email;
   late String role;
   late String userName;
-  late String age="18";
+  late String age = "18";
   late String height;
   late String weight;
   _fetch() async {
@@ -33,7 +30,6 @@ class _EditProfilePggState extends State<EditProfilePgg> {
         age = value.data()!['Age'];
         height = value.data()!['Height'];
         weight = value.data()!['Weight'];
-
       }).catchError((e) {
         print(e);
       });
@@ -55,12 +51,12 @@ class _EditProfilePggState extends State<EditProfilePgg> {
                 );
               } else {
                 return EditprOFILE(
-                    age : age,
-                    emailadress : email,
-                    weight : weight ,
-                    height : height ,
-                    fullName: userName,
-                    );
+                  age: age,
+                  emailadress: email,
+                  weight: weight,
+                  height: height,
+                  fullName: userName,
+                );
               }
             }));
   }

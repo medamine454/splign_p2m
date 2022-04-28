@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:splign_p2m/Signup_login/Description_doctor.dart';
 import 'package:splign_p2m/Signup_login/Widget/bezierContainer.dart';
 import 'package:splign_p2m/Signup_login/gender.dart';
 import 'package:splign_p2m/Signup_login/loginPage.dart';
@@ -91,22 +92,36 @@ class _SignUpPageState extends State<SignUpPage> {
                 FirebaseFirestore.instance.collection('users').doc(user!.uid);
             await ref
                 .set({
+                  'id': user.uid,
                   'Username': username_ctrl.text,
                   'Email': email_ctrl.text,
                   'Password': password_ctrl.text,
-                  'role': role
+                  'role': role,
+                  'searchKey': username_ctrl.text[0].toUpperCase(),
+                  'ImgUrl':
+                      'https://firebasestorage.googleapis.com/v0/b/splign-posture.appspot.com/o/22-223941_transparent-avatar-png-male-avatar-icon-transparent-png.png?alt=media&token=908e32af-f7c9-4569-8b93-0e909e18db85'
                 })
                 .then((value) => print("User Added"))
                 .catchError((error) => print("Failed to add user: $error"));
             setState(() {
               isLoading = false;
             });
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => GenderPage(
-                          user: user,
-                        )));
+
+            if (role == 'patient') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => GenderPage(
+                            user: user,
+                          )));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DesciprionDoctor(
+                            user: user,
+                          )));
+            }
           } else {
             final snackBar = SnackBar(content: Text(result));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);

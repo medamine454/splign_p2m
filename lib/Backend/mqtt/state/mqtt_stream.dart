@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'MQTTAppState.dart';
 import 'mqttviews.dart';
-
 
 class Profileg extends StatefulWidget {
   @override
@@ -17,7 +14,7 @@ class _ProfilegState extends State<Profileg> {
   late String email;
   late String role;
   late String userName;
-  late String age="18";
+  late String age = "18";
   late String height;
   late String weight;
   _fetch() async {
@@ -35,7 +32,6 @@ class _ProfilegState extends State<Profileg> {
         age = value.data()!['Age'];
         height = value.data()!['Height'];
         weight = value.data()!['Weight'];
-
       }).catchError((e) {
         print(e);
       });
@@ -56,17 +52,16 @@ class _ProfilegState extends State<Profileg> {
                   ),
                 );
               } else {
-                return  ChangeNotifierProvider<MQTTAppState>(
+                return ChangeNotifierProvider<MQTTAppState>(
                   create: (_) => MQTTAppState(),
-                  child:  MQTTView(
-                    age : age,
-                    emailadress : email,
-                    weight : weight ,
-                    height : height ,
+                  child: MQTTView(
+                    age: age,
+                    emailadress: email,
+                    weight: weight,
+                    height: height,
                     fullName: userName,
                   ),
-                )
-                 ;
+                );
               }
             }));
   }

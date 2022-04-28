@@ -53,16 +53,17 @@ class _LineChartSample2State extends State<LineChartSample2> {
         .collection('Gadget')
         .doc('Q2IBBFqtB6y94Wfyj6zT')
         .collection('Measurement')
+        .where("Date_Time", isGreaterThanOrEqualTo: _selectedValue)
+        .where("Date_Time", isLessThanOrEqualTo: selectedValue_after)
         .where("value", isEqualTo: "1")
         .get();
     // Get data from docs and convert map to List
     final allData_goodposture = querySnapshot_2.docs;
     int number_of_good = allData_goodposture.length;
     final allData = querySnapshot.docs;
-
     print(good_percent);
 
-    if (allData.length > 0) {
+    if (allData.length > 0 && allData_goodposture.length > 0) {
       good_percent = number_of_good / allData.length;
       for (var i = 0; i < allData.length; i++) {
         var dt = (allData[i]['Date_Time'].seconds) * 1000;

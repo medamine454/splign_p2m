@@ -41,7 +41,10 @@ class _SupportState extends State<Support> {
     var size = MediaQuery.of(context)
         .size; //this gonna give us total height and with of our device
     return Scaffold(
+<<<<<<< HEAD
+=======
 
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
       body: Stack(
         children: <Widget>[
           Container(

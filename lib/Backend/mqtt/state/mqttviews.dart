@@ -78,6 +78,7 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
     // Keep a reference to the app state.
     currentAppState = appState;
     final Scaffold scaffold = Scaffold(
+
         appBar: AppBar(
           title: Center(
             child: Text(
@@ -90,6 +91,7 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
             ),
           ),
           backgroundColor: Color(0xff67bd42),
+
         ),
         body: _buildColumn());
     return scaffold;

@@ -20,7 +20,7 @@ Future<void> main() async {
       importance: NotificationImportance.High,
       channelDescription: 'heyy',
       channelShowBadge: true,
-      //playSound: true,
+      playSound: true,
     )
     // soundSource: 'resource://raw/res_well_done'
   ]).then((_) => print('okey'));

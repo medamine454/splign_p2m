@@ -6,12 +6,18 @@ import 'package:provider/provider.dart';
 import 'package:splign_p2m/Backend/mqtt/state/mqttviews.dart';
 import 'package:splign_p2m/support/support_stream.dart';
 import '../Backend/mqtt/state/MQTTAppState.dart';
+<<<<<<< HEAD
+import '../support/support.dart';
+
+=======
 import '../Search_doctor/firestore_search.dart';
 import '../profile/edit/build_stream_ptofil.dart';
 import '../stats/Stream_builder.dart';
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
 import '../stats/stats_page.dart';
 import '../support/support.dart';
 import 'package:splign_p2m/Backend//mqtt/state/mqtt_stream.dart';
+
 
 class Home extends StatefulWidget {
   static const routeName = 'home';
@@ -29,8 +35,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       child: Profileg(),
     ),
     LineChartSample2(),
+<<<<<<< HEAD
+    ProfileScreen(),
+    Support(),
+    ProfileScreen(),
+=======
     SearchDoctor(),
     ProfilePgg(),
+>>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
   ];
   void onPageChanged(int index) {
     setState(() {

@@ -1,2 +1,2 @@
-# splign_p2m
+# mobile application of splign_p2m
  

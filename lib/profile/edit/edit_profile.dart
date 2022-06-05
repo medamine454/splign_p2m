@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,12 +21,14 @@ class EditprOFILE extends StatefulWidget {
     required this.weight,
     required this.height,
     required this.fullName,
+    required this.imageFile,
   }) : super(key: key);
   String age;
   String weight;
   String height;
   String emailadress;
   String fullName;
+  String imageFile;
 
   @override
   State<EditprOFILE> createState() => _EditprOFILEState();
@@ -34,7 +37,7 @@ class EditprOFILE extends StatefulWidget {
 class _EditprOFILEState extends State<EditprOFILE> {
   bool showPassword = false;
 
-  File imageFile = File('assets/images/man.png');
+  var imageFile_1;
 
   TextEditingController emailController = TextEditingController();
 
@@ -52,7 +55,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
     );
     if (pickedFile != null) {
       setState(() {
-        imageFile = File(pickedFile.path);
+        imageFile_1 = File(pickedFile.path);
       });
     }
   }
@@ -63,7 +66,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
-              child: new Wrap(
+              child: Wrap(
                 children: <Widget>[
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
@@ -95,7 +98,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
     );
     if (pickedFile != null) {
       setState(() {
-        imageFile = File(pickedFile.path);
+        imageFile_1 = File(pickedFile.path);
       });
     }
   }
@@ -165,11 +168,11 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .catchError((e) => print(e));
       }
 
-      if (imageFile != null) {
+      if (imageFile_1 != null) {
         final user = FirebaseAuth.instance.currentUser;
         final id = user!.uid;
         final ref = FirebaseStorage.instance.ref().child(id + 'jpg');
-        await ref.putFile(imageFile);
+        await ref.putFile(imageFile_1);
 
         String url = await ref.getDownloadURL();
 
@@ -177,7 +180,7 @@ class _EditprOFILEState extends State<EditprOFILE> {
             .collection('users')
             .doc(id)
             .update({
-              'ImageUrl': url,
+              'ImgUrl': url,
             })
             .then((value) => print('Updated'))
             .catchError((e) => print(e));
@@ -216,42 +219,60 @@ class _EditprOFILEState extends State<EditprOFILE> {
               SizedBox(
                 height: 15,
               ),
-              ProfilePic(),
-              //Center(
-              //child: GestureDetector(
-              //onTap: () {
-              //_showPicker(context);
-              //},
-              //child:
-              //ProfilePic(),
-              //CircleAvatar(
-              //radius: 100,
-              //backgroundColor: Color(0xffFDCF09),
-
-              //child:
-              //imageFile != null
-              // ? ClipRRect(
-              // borderRadius: BorderRadius.circular(50),
-              //child: Image.file(
-              //imageFile,
-
-              //fit: BoxFit.fitHeight,
-              //),
-              //)
-              //: Container(
-              //decoration: BoxDecoration(
-              //color: Colors.grey[200],
-              //  borderRadius: BorderRadius.circular(50)),
-              //width: 100,
-              //height: 100,
-              //child: Icon(
-              //Icons.camera_alt,
-              //color: Colors.grey[800],
-              //),
-              //),
-              //),
-              //),
-              //),
+              // ProfilePic(),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    _showPicker(context);
+                  },
+                  child:
+                      //ProfilePic(),
+                      Stack(
+                    clipBehavior: Clip.none,
+                    alignment: AlignmentDirectional.centerEnd,
+                    fit: StackFit.loose,
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Color(0xffFDCF09),
+                        child: imageFile_1 != null
+                            ? CircleAvatar(
+                                radius: 100,
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: Image.file(
+                                  imageFile_1,
+                                  fit: BoxFit.fill,
+                                ).image)
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                ),
+                                width: 100,
+                                height: 100,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.black,
+                                ),
+                              ),
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Color(0xFFF5F6F9),
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.blue,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 35,
               ),
@@ -347,7 +368,9 @@ class _EditprOFILEState extends State<EditprOFILE> {
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: Text("CANCEL",
                         style: TextStyle(
                             fontSize: 14,

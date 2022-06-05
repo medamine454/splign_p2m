@@ -7,8 +7,8 @@ const kTextColor = Color(0xFF222B45);
 const kBlueLightColor = Color(0xFFC7B8F5);
 const kBlueColor = Color(0xFF817DC0);
 const kShadowColor = Color(0xFFE6E6E6);
-class CategoryCard extends StatelessWidget {
 
+class CategoryCard extends StatelessWidget {
   const CategoryCard({
     Key? key,
     required this.svgSrc,
@@ -38,12 +38,9 @@ class CategoryCard extends StatelessWidget {
           ],
         ),
         child: Material(
-
           color: Colors.transparent,
           child: InkWell(
-          onTap : (){press();},
-
-            onTap:(){
+            onTap: () {
               press();
             },
             child: Padding(
@@ -51,12 +48,13 @@ class CategoryCard extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Spacer(),
-                  Expanded(child: SvgPicture.asset(svgSrc),),
+                  Expanded(
+                    child: SvgPicture.asset(svgSrc),
+                  ),
                   Spacer(),
                   Text(
                     title,
                     textAlign: TextAlign.center,
-
                   ),
                 ],
               ),

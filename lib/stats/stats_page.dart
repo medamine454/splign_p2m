@@ -55,6 +55,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         .collection('Measurement')
         .where("Date_Time", isGreaterThanOrEqualTo: _selectedValue)
         .where("Date_Time", isLessThanOrEqualTo: selectedValue_after)
+        .orderBy('Date_Time')
         .where("value", isEqualTo: "1")
         .get();
     // Get data from docs and convert map to List
@@ -90,6 +91,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     double height = MediaQuery.of(context).size.height;
     final Scaffold scaffold = Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Center(
             child: Text(
               'Statistics',

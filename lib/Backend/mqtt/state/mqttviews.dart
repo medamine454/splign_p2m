@@ -12,18 +12,16 @@ import 'package:splign_p2m/notif/notification.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-
 class MQTTView extends StatefulWidget {
-  MQTTView(
-      {Key ?key,
-        required this.age,
-        required this.emailadress,
-        required this.weight,
-        required this.height,
-        required this.fullName,})
-
-      : super(key: key);
-  String age= '18';
+  MQTTView({
+    Key? key,
+    required this.age,
+    required this.emailadress,
+    required this.weight,
+    required this.height,
+    required this.fullName,
+  }) : super(key: key);
+  String age = '18';
   String weight;
   String height;
   String emailadress;
@@ -34,7 +32,7 @@ class MQTTView extends StatefulWidget {
   }
 }
 
-class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
+class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver {
   final TextEditingController _hostTextController = TextEditingController();
   final TextEditingController _messageTextController = TextEditingController();
   final TextEditingController _topicTextController = TextEditingController();
@@ -48,10 +46,11 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
   AssetImage img = AssetImage(
     'assets/anim.gif',
   );
+  int alpha = 300;
+  int beta = 1;
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
-
   }
 
   @override
@@ -66,10 +65,10 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
   //@override
   //void didChangeLifeAppCycleState(AppLifecycleState state) {
 
-    //super.didChangeLifeAppCycleState(state);
-    //if (state == AppLifecycleState.inactive||state == AppLifecycleState.detached) return;
-     //isBackground = state == AppLifecycleState.paused;
-     //print(isBackground);
+  //super.didChangeLifeAppCycleState(state);
+  //if (state == AppLifecycleState.inactive||state == AppLifecycleState.detached) return;
+  //isBackground = state == AppLifecycleState.paused;
+  //print(isBackground);
   //}
 
   @override
@@ -78,8 +77,8 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
     // Keep a reference to the app state.
     currentAppState = appState;
     final Scaffold scaffold = Scaffold(
-
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Center(
             child: Text(
               'Tracking',
@@ -91,7 +90,6 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
             ),
           ),
           backgroundColor: Color(0xff67bd42),
-
         ),
         body: _buildColumn());
     return scaffold;
@@ -114,6 +112,8 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
 
   int _dropDownValue = 5;
   int _dropDownValue_min = 15;
+  int _dropDownValue_sec = 300;
+
   var cancel_start = true;
   Timer _timer =
       Timer(const Duration(seconds: 5), () => print('Timer finished'));
@@ -134,14 +134,15 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
   }
 
   void startTimer() {
-    int alpha = _dropDownValue_min * 60;
     // Set 1 second callback
     const period = const Duration(seconds: 1);
     _timer = Timer.periodic(period, (timer) {
       // Update interface
       setState(() {
         // minus one second because it calls back once a second
-        seconds--;
+        alpha--;
+        _dropDownValue_min = alpha;
+        beta = Duration(seconds: _dropDownValue_min).inMinutes;
       });
       if (seconds == 0) {
         cancelTimer();
@@ -249,10 +250,10 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
     timesplayed_second++;
     //print(isBackground);
     if (currentAppState.getReceivedText.contains('0') &&
-        timesplayed_second % 15 == 0 ) {
+        timesplayed_second % 15 == 0) {
       player.play("adjust.mp3");
     }
-    if (currentAppState.getReceivedText.contains('0') && timesplayed == 0 ) {
+    if (currentAppState.getReceivedText.contains('0') && timesplayed == 0) {
       timesplayed++;
       img = AssetImage(
         'assets/reversed.gif',
@@ -301,7 +302,7 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
               ),
             ),
             TextSpan(
-                text: constructTime(seconds),
+                text: constructTime(_dropDownValue_min),
                 style: GoogleFonts.poppins(
                   textStyle: Theme.of(context).textTheme.headline4,
                   fontSize: 18,
@@ -325,7 +326,7 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
               child: CircularPercentIndicator(
                 radius: 100.0,
                 lineWidth: 12,
-                percent: ((seconds / 120) - 1).abs(),
+                percent: ((alpha / 300) - 1).abs(),
                 progressColor: progre_color,
               ),
             ),
@@ -353,11 +354,11 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
                             actionsOverflowButtonSpacing: 20,
                             content: Container(
                                 child: DropdownButton(
-                              hint: Text('$_dropDownValue_min minutes'),
+                              hint: Text('$beta minutes'),
                               isExpanded: true,
                               iconSize: 30.0,
                               style: TextStyle(color: Colors.blue),
-                              items: [15, 30, 60].map(
+                              items: [5, 30, 60].map(
                                 (val) {
                                   return DropdownMenuItem(
                                     value: val,
@@ -495,7 +496,7 @@ class _MQTTViewState extends State<MQTTView> with WidgetsBindingObserver{
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              '$_dropDownValue_min min',
+              '$beta min',
               style: GoogleFonts.poppins(
                 textStyle: Theme.of(context).textTheme.headline4,
                 fontSize: 17,

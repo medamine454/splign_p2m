@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import 'MQTTAppState.dart';
 import 'mqttviews.dart';
 
-class Profileg extends StatefulWidget {
+class Mqtt_straeam extends StatefulWidget {
   @override
-  _ProfilegState createState() => _ProfilegState();
+  _Mqtt_straeamState createState() => _Mqtt_straeamState();
 }
 
-class _ProfilegState extends State<Profileg> {
+class _Mqtt_straeamState extends State<Mqtt_straeam> {
   late String email;
   late String role;
   late String userName;

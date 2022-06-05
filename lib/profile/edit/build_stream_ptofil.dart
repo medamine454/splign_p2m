@@ -1,8 +1,10 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/body.dart';
 import 'edit_profile.dart';
+
 
 class ProfilePgg extends StatefulWidget {
   @override
@@ -13,9 +15,11 @@ class _ProfilePggState extends State<ProfilePgg> {
   late String email;
   late String role;
   late String userName;
-  late String age = "18";
+  late String age="18";
   late String height;
   late String weight;
+  late String Url;
+
   _fetch() async {
     final user = FirebaseAuth.instance.currentUser;
     final id = user!.uid;
@@ -31,6 +35,8 @@ class _ProfilePggState extends State<ProfilePgg> {
         age = value.data()!['Age'];
         height = value.data()!['Height'];
         weight = value.data()!['Weight'];
+        Url = value.data()!['ImgUrl'];
+
       }).catchError((e) {
         print(e);
       });
@@ -52,11 +58,12 @@ class _ProfilePggState extends State<ProfilePgg> {
                 );
               } else {
                 return Body(
-                  age: age,
-                  emailadress: email,
-                  weight: weight,
-                  height: height,
+                  age : age,
+                  emailadress : email,
+                  weight : weight ,
+                  height : height ,
                   fullName: userName,
+                  Image : Url,
                 );
               }
             }));

@@ -58,6 +58,7 @@ class _SearchDoctorState extends State<SearchDoctor> {
 
     return new Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Center(
             child: Text(
               'My doctor',

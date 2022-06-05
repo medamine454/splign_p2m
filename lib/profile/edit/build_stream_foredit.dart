@@ -15,6 +15,7 @@ class _EditProfilePggState extends State<EditProfilePgg> {
   late String age = "18";
   late String height;
   late String weight;
+  late String imageURL = 'images/man.png';
   _fetch() async {
     final user = FirebaseAuth.instance.currentUser;
     final id = user!.uid;
@@ -30,6 +31,7 @@ class _EditProfilePggState extends State<EditProfilePgg> {
         age = value.data()!['Age'];
         height = value.data()!['Height'];
         weight = value.data()!['Weight'];
+        imageURL = value.data()!['ImgUrl'];
       }).catchError((e) {
         print(e);
       });
@@ -56,6 +58,7 @@ class _EditProfilePggState extends State<EditProfilePgg> {
                   weight: weight,
                   height: height,
                   fullName: userName,
+                  imageFile: imageURL,
                 );
               }
             }));

@@ -6,6 +6,7 @@ import 'category_card.dart';
 import 'search_bar.dart';
 
 import '../app/shared_components/coustom_bottom_nav_bar.dart';
+
 const kBackgroundColor = Color(0xFFF8F8F8);
 const kActiveIconColor = Color(0xFFE68342);
 const kTextColor = Color(0xFF222B45);
@@ -13,19 +14,15 @@ const kBlueLightColor = Color(0xFFC7B8F5);
 const kBlueColor = Color(0xFF817DC0);
 const kShadowColor = Color(0xFFE6E6E6);
 
-
-
 class Support extends StatefulWidget {
-  Support(
-
-      {Key ?key,
-        required this.age,
-        required this.emailadress,
-        required this.weight,
-        required this.height,
-        required this.fullName,})
-
-      : super(key: key);
+  Support({
+    Key? key,
+    required this.age,
+    required this.emailadress,
+    required this.weight,
+    required this.height,
+    required this.fullName,
+  }) : super(key: key);
   String age;
   String weight;
   String height;
@@ -41,10 +38,6 @@ class _SupportState extends State<Support> {
     var size = MediaQuery.of(context)
         .size; //this gonna give us total height and with of our device
     return Scaffold(
-<<<<<<< HEAD
-=======
-
->>>>>>> 79a7db9c9ca79591993f0c42258692d62bfc42a2
       body: Stack(
         children: <Widget>[
           Container(
@@ -58,7 +51,6 @@ class _SupportState extends State<Support> {
                 bottomRight: const Radius.circular(30.0),
                 topRight: const Radius.circular(30.0),
               ),
-
               image: DecorationImage(
                 alignment: Alignment.centerLeft,
                 image: AssetImage("assets/images/undraw_pilates_gpdb.png"),
@@ -85,7 +77,7 @@ class _SupportState extends State<Support> {
                     ),
                   ),
                   Text(
-                    "Good Morning"+ widget.fullName,
+                    "Good Morning" + widget.fullName,
                   ),
                   SearchBar(),
                   Expanded(
@@ -98,10 +90,13 @@ class _SupportState extends State<Support> {
                         CategoryCard(
                           title: "You should always keep a good posture",
                           svgSrc: "assets/icons/posture.svg",
-                          press: () {Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Good_posture()),
-                          );},
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Good_posture()),
+                            );
+                          },
                         ),
                         CategoryCard(
                           title: "Yoga is good for you",
@@ -111,17 +106,19 @@ class _SupportState extends State<Support> {
                         CategoryCard(
                           title: "You Have To Eat Healthy",
                           svgSrc: "assets/icons/Eat_healthy.svg",
-                          press: () {Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Good_posture()),
-                          );},
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Good_posture()),
+                            );
+                          },
                         ),
                         CategoryCard(
                           title: "Make a medical ckeckup ",
                           svgSrc: "assets/icons/Medical_care.svg",
                           press: () {},
                         ),
-
                         CategoryCard(
                           title: "Maintain a stress free lifestyle",
                           svgSrc: "assets/icons/healthy_lifestyle.svg",

@@ -18,7 +18,8 @@ class Body extends StatefulWidget {
         required this.emailadress,
         required this.weight,
         required this.height,
-        required this.fullName,})
+        required this.fullName,
+        required this.Image,})
 
       : super(key: key);
   String age;
@@ -26,7 +27,7 @@ class Body extends StatefulWidget {
   String height;
   String emailadress;
   String fullName;
-
+  String Image;
 
   @override
   State<Body> createState() => _BodyState();
@@ -45,7 +46,15 @@ class _BodyState extends State<Body> {
 
       child: Column(
         children: [
-          ProfilePic(),
+          CircleAvatar(
+              radius: 100,
+              backgroundColor: Colors.transparent,
+              backgroundImage: Image.network(
+                widget.Image,
+                fit: BoxFit.fill,
+
+              ).image,
+          ),
           SizedBox(height: 20),
           Center(
 
